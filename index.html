@@ -1169,6 +1169,7 @@
   const SUPABASE_KEY = "sb_publishable_KYFQzLFMjueBUre97McgoA_bwlpjDQs";
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const FORCE_LOGIN_ON_LOAD = true;
+  const AUTH_TAB_KEY = 'faro_auth_tab_active';
 
   let SESSION = null;
   let PROFILES_MAP = {};
@@ -1225,6 +1226,7 @@
     }
 
     SESSION = data.session;
+    sessionStorage.setItem(AUTH_TAB_KEY, '1');
     setLoginVisible(false);
     document.getElementById('login-password').value = '';
 
@@ -1289,7 +1291,9 @@
 
   async function ensureAuth() {
     const recovery = isRecoveryFlow();
-    if (FORCE_LOGIN_ON_LOAD && !recovery) {
+    const authTabActive = sessionStorage.getItem(AUTH_TAB_KEY) === '1';
+
+    if (FORCE_LOGIN_ON_LOAD && !recovery && !authTabActive) {
       await sb.auth.signOut({ scope: 'local' });
       SESSION = null;
       setLoginVisible(true);
@@ -1308,6 +1312,12 @@
       if (!SESSION?.user) showToast('Link de recuperação inválido ou expirado');
       abrirRecuperacaoSenha();
       return false;
+    }
+
+    if (SESSION?.user) {
+      sessionStorage.setItem(AUTH_TAB_KEY, '1');
+    } else {
+      sessionStorage.removeItem(AUTH_TAB_KEY);
     }
 
     setLoginVisible(!SESSION);
