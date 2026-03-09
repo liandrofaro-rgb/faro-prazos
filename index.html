@@ -60,10 +60,10 @@
     }
 
     .logo-wrap img {
-      height: 48px;
+      height: 52px;
       background: white;
       border-radius: 8px;
-      padding: 4px 10px;
+      padding: 5px 10px;
       object-fit: contain;
     }
 
@@ -794,15 +794,29 @@
     }
 
     .login-logo {
-      width: 42px;
-      height: 42px;
+      width: 62px;
+      height: 62px;
       border-radius: 12px;
-      background: var(--navy);
-      color: white;
-      font-weight: 700;
+      background: white;
+      border: 1px solid var(--border);
+      padding: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .login-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .logo-fallback {
+      font-size: 11px;
+      color: var(--navy);
+      font-weight: 700;
+      letter-spacing: 0.08em;
     }
 
     .login-brand h1 {
@@ -893,7 +907,9 @@
 <div id="login-screen" class="login-screen">
   <div class="login-card">
     <div class="login-brand">
-      <div class="login-logo">F</div>
+      <div class="login-logo">
+        <img src="./logo-faro.png" alt="Faro Advocacia" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend','<span class=&quot;logo-fallback&quot;>FARO</span>');">
+      </div>
       <div>
         <h1>Faro Advocacia &amp; Consultoria</h1>
         <p>Controle de Prazos Processuais</p>
@@ -926,7 +942,7 @@
 </div>
 <header>
   <div class="logo-wrap">
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAABACAQAAAD8GO2jAAAAAmJLR0QA/4ePzL8AAAEGSURBVHja7dixDcJAFAXQwL8Jm7AFO7ADu7ADu7ADu7ADu7ADu7B5v0B0n8Wg1hG0mJ4v5mQh5d7f9mA0AAAAAAAAAAAAAAAAAAAAAAAB4cWj7Ck0b5m3m8Xv1q6V8j+0c4jM2H0r2i6Yy1m0J5x3h7M3G4j8r8J7x5m3P5WgR6y3Q5nL3w7tK2gW5n7v5bQKf7tJ1z2i7V0Q3m0x7Q3V7kq8Q9q9m3n1n3mM5W9wY6i9Yt3m7p9Qm2q7Wv2LwH8mJ0mW0r0p0pYd2d4f5VY4W+0mJ8qv0l4kM7k9z0f8qv1n5o8tq5b7c9m3O4W0b6mN4n7H1mW+9b0u1nP2mH4n5n7O2r5x8mT8AAAAAAAAAAAAAAAAAAAAAAAB8A3k1Gv+V2J5YAAAAAElFTkSuQmCC" alt="Faro Advocacia">
+    <img src="./logo-faro.png" alt="Faro Advocacia">
     <div class="header-info">
       <span class="header-title">Faro Advocacia &amp; Consultoria</span>
       <span class="header-subtitle">Controle de Prazos Processuais</span>
