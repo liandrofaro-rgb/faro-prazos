@@ -781,9 +781,109 @@
     .toast.show { opacity: 1; transform: translateY(0); }
 
     @media (max-width: 900px) {
-      .layout { grid-template-columns: 1fr; }
-      .sidebar { position: static; height: auto; }
-      .stats-row { grid-template-columns: 1fr 1fr; }
+      header {
+        height: 68px;
+        padding: 0 12px;
+      }
+
+      .logo-wrap { gap: 8px; }
+
+      .logo-wrap img {
+        height: 44px;
+        max-width: 180px;
+      }
+
+      .header-info {
+        position: static;
+        left: auto;
+        transform: none;
+        pointer-events: auto;
+      }
+
+      .header-subtitle {
+        font-size: 12px;
+        letter-spacing: 0.03em;
+        white-space: nowrap;
+      }
+
+      .header-badge {
+        display: none;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+        min-height: calc(100vh - 68px);
+      }
+
+      .sidebar {
+        position: static;
+        top: auto;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 18px 14px;
+      }
+
+      .main {
+        padding: 16px 14px 72px;
+      }
+
+      .stats-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .section-header {
+        padding: 14px 0 4px;
+      }
+
+      .prazo-list {
+        padding: 12px 0 20px;
+      }
+
+      .field-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .prazo-top {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .prazo-dates {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .prazo-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .prazo-actions {
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .header-subtitle {
+        font-size: 11px;
+      }
+
+      .logo-wrap img {
+        height: 38px;
+        max-width: 150px;
+      }
+
+      .stats-row {
+        grid-template-columns: 1fr;
+      }
+
+      .login-card {
+        padding: 24px 16px 18px;
+      }
     }
 
     .login-screen {
