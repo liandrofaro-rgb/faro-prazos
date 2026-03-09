@@ -72,6 +72,14 @@
       flex-direction: column;
     }
 
+    .header-logo-fallback {
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
     .header-title {
       font-size: 16px;
       font-weight: 700;
@@ -990,7 +998,7 @@
 </div>
 <header>
   <div class="logo-wrap">
-    <img src="./logo-faro.png" alt="Faro Advocacia">
+    <img src="./logo-faro.png" alt="Faro Advocacia" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend','<span class=&quot;header-logo-fallback&quot;>FARO</span>');">
     <div class="header-info">
       <span class="header-title">Faro Advocacia &amp; Consultoria</span>
       <span class="header-subtitle">Controle de Prazos Processuais</span>
