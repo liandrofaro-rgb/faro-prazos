@@ -616,6 +616,15 @@
 
     .btn-icon.email:hover { background: #f5e8c0; }
 
+    .btn-icon.gcal {
+      background: #eef3ff;
+      color: #1a4fb8;
+      border: 1px solid #bcd0ff;
+      font-weight: 600;
+    }
+
+    .btn-icon.gcal:hover { background: #dfe9ff; }
+
     .btn-icon.delete {
       background: var(--danger-pale);
       color: var(--danger);
@@ -1775,6 +1784,7 @@
                 <button class="btn-icon whats" onclick="enviarWhatsApp(${p.id})">📲 WhatsApp</button>
                 <button class="btn-icon concluir" onclick="concluirPrazo(${p.id})">✔ Concluído</button>
                 <button class="btn-icon email" onclick="enviarEmail(${p.id})">✉ E-mail</button>
+                <button class="btn-icon gcal" onclick="abrirGoogleCalendar(${p.id})">📅 Google Calendar</button>
                 <button class="btn-icon delete" onclick="deletarPrazo(${p.id})">✕ Remover</button>
               </div>
             </div>
@@ -1833,6 +1843,7 @@
           <div class="prazo-footer">
             <div>${advHtml}</div>
             <div class="prazo-actions">
+              <button class="btn-icon gcal" onclick="abrirGoogleCalendar(${p.id})">📅 Google Calendar</button>
               <button class="btn-icon reabrir" onclick="reabrirPrazo(${p.id})">↩ Reabrir</button>
               <button class="btn-icon delete" onclick="deletarCumprido(${p.id})">✕ Excluir</button>
             </div>
@@ -1897,6 +1908,41 @@
 
     window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
     showToast('Abrindo WhatsApp...');
+  }
+
+  function abrirGoogleCalendar(id) {
+    const p = [...prazos, ...prazosCumpridos].find(x => x.id === id);
+    if (!p) {
+      showToast('Prazo não encontrado');
+      return;
+    }
+
+    const [ano, mes, dia] = String(p.fim || '').split('-').map(Number);
+    if (!ano || !mes || !dia) {
+      showToast('Data final inválida');
+      return;
+    }
+
+    const inicio = new Date(ano, mes - 1, dia);
+    const fim = new Date(ano, mes - 1, dia + 1); // fim exclusivo (evento de 1 dia)
+    const fmtGcal = (d) =>
+      `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+
+    const titulo = `${p.desc || 'Prazo'} - ${p.processo || 'Sem processo'}`;
+    const detalhes =
+`Autor: ${p.autor || '—'}
+Réu: ${p.reu || '—'}
+Advogado responsável: ${p.advogado || '—'}`;
+
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: titulo,
+      details: detalhes,
+      dates: `${fmtGcal(inicio)}/${fmtGcal(fim)}`
+    });
+
+    window.open(`https://calendar.google.com/calendar/render?${params.toString()}`, '_blank');
+    showToast('Abrindo Google Calendar...');
   }
 
   function enviarEmail(id) {
