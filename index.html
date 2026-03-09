@@ -784,30 +784,36 @@
       header {
         height: 68px;
         padding: 0 12px;
+        overflow: hidden;
       }
 
-      .logo-wrap { gap: 8px; }
+      .logo-wrap {
+        gap: 8px;
+        max-width: 44%;
+      }
 
       .logo-wrap img {
-        height: 44px;
-        max-width: 180px;
+        height: 40px;
+        max-width: 100%;
       }
 
       .header-info {
-        position: static;
-        left: auto;
-        transform: none;
-        pointer-events: auto;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 54%;
+        pointer-events: none;
       }
 
       .header-subtitle {
-        font-size: 12px;
-        letter-spacing: 0.03em;
-        white-space: nowrap;
+        font-size: 11px;
+        letter-spacing: 0.02em;
+        line-height: 1.15;
+        white-space: normal;
       }
 
       .header-badge {
-        display: none;
+        display: none !important;
       }
 
       .layout {
@@ -869,12 +875,15 @@
 
     @media (max-width: 520px) {
       .header-subtitle {
-        font-size: 11px;
+        font-size: 10px;
       }
 
       .logo-wrap img {
-        height: 38px;
-        max-width: 150px;
+        height: 34px;
+      }
+
+      .header-info {
+        width: 56%;
       }
 
       .stats-row {
