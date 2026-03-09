@@ -895,6 +895,40 @@
       background: var(--navy-light);
     }
 
+    .login-link-btn {
+      margin-top: 2px;
+      background: none;
+      border: none;
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: right;
+      padding: 2px 0 0;
+    }
+
+    .login-link-btn:hover {
+      text-decoration: underline;
+    }
+
+    .recovery-box {
+      display: none;
+      margin-top: 6px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #faf9f7;
+    }
+
+    .recovery-box .title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
     .login-footer {
       margin-top: 16px;
       text-align: center;
@@ -933,6 +967,20 @@
       </div>
 
       <button class="login-btn" onclick="fazerLogin()">Entrar</button>
+      <button type="button" class="login-link-btn" onclick="enviarRecuperacaoSenha()">Esqueci minha senha</button>
+
+      <div id="recovery-box" class="recovery-box">
+        <div class="title">Redefinir senha</div>
+        <div class="login-field">
+          <label for="recovery-password">Nova senha</label>
+          <input type="password" id="recovery-password" placeholder="Mínimo 6 caracteres">
+        </div>
+        <div class="login-field">
+          <label for="recovery-password-confirm">Confirmar nova senha</label>
+          <input type="password" id="recovery-password-confirm" placeholder="Repita a nova senha">
+        </div>
+        <button type="button" class="login-btn" onclick="redefinirSenha()">Salvar nova senha</button>
+      </div>
     </div>
 
     <div class="login-footer">
@@ -1144,6 +1192,17 @@
     SESSION = session;
   });
 
+  function isRecoveryFlow() {
+    return window.location.hash.includes('type=recovery');
+  }
+
+  function abrirRecuperacaoSenha() {
+    const box = document.getElementById('recovery-box');
+    if (!box) return;
+    box.style.display = 'block';
+    setLoginVisible(true);
+  }
+
   function setLoginVisible(visible) {
     const login = document.getElementById('login-screen');
     if (!login) return;
@@ -1175,8 +1234,62 @@
     showToast('Login realizado com sucesso');
   }
 
+  async function enviarRecuperacaoSenha() {
+    const email = document.getElementById('login-email').value.trim();
+    if (!email) {
+      showToast('Informe seu e-mail para recuperar a senha');
+      return;
+    }
+
+    const redirectTo = `${window.location.origin}${window.location.pathname}`;
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo });
+
+    if (error) {
+      console.error(error);
+      showToast('Erro ao enviar e-mail de recuperação');
+      return;
+    }
+
+    showToast('E-mail de recuperação enviado');
+  }
+
+  async function redefinirSenha() {
+    const senha = document.getElementById('recovery-password').value;
+    const confirmar = document.getElementById('recovery-password-confirm').value;
+
+    if (senha.length < 6) {
+      showToast('A nova senha deve ter ao menos 6 caracteres');
+      return;
+    }
+    if (senha !== confirmar) {
+      showToast('As senhas não conferem');
+      return;
+    }
+
+    const { error } = await sb.auth.updateUser({ password: senha });
+    if (error) {
+      console.error(error);
+      showToast('Link inválido ou expirado. Solicite novamente.');
+      return;
+    }
+
+    await sb.auth.signOut({ scope: 'local' });
+    SESSION = null;
+
+    document.getElementById('recovery-password').value = '';
+    document.getElementById('recovery-password-confirm').value = '';
+    document.getElementById('recovery-box').style.display = 'none';
+
+    if (window.history?.replaceState) {
+      window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+    }
+
+    showToast('Senha redefinida com sucesso. Faça login.');
+  }
+
   async function ensureAuth() {
-    if (FORCE_LOGIN_ON_LOAD) {
+    const recovery = isRecoveryFlow();
+    if (FORCE_LOGIN_ON_LOAD && !recovery) {
       await sb.auth.signOut({ scope: 'local' });
       SESSION = null;
       setLoginVisible(true);
@@ -1191,6 +1304,12 @@
     }
 
     SESSION = data.session;
+    if (recovery) {
+      if (!SESSION?.user) showToast('Link de recuperação inválido ou expirado');
+      abrirRecuperacaoSenha();
+      return false;
+    }
+
     setLoginVisible(!SESSION);
     return !!SESSION;
   }
