@@ -76,6 +76,10 @@
       justify-content: center;
       align-items: center;
       text-align: center;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
     }
 
     .header-logo-fallback {
@@ -1006,9 +1010,9 @@
 <header>
   <div class="logo-wrap">
     <img src="./logo-faro.png" alt="Faro Advocacia" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend','<span class=&quot;header-logo-fallback&quot;>FARO</span>');">
-    <div class="header-info">
-      <span class="header-subtitle">Controle de Prazos Processuais</span>
-    </div>
+  </div>
+  <div class="header-info">
+    <span class="header-subtitle">Controle de Prazos Processuais</span>
   </div>
   <div class="header-badge">Sistema de Gestão</div>
 </header>
