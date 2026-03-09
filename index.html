@@ -782,31 +782,38 @@
 
     @media (max-width: 900px) {
       header {
-        height: 68px;
-        padding: 0 12px;
+        height: auto;
+        min-height: 88px;
+        padding: calc(env(safe-area-inset-top, 0px) + 8px) 12px 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 8px;
         overflow: hidden;
       }
 
       .logo-wrap {
+        width: 100%;
+        justify-content: center;
         gap: 8px;
-        max-width: 44%;
+        max-width: none;
       }
 
       .logo-wrap img {
-        height: 40px;
-        max-width: 100%;
+        height: 44px;
+        max-width: 220px;
       }
 
       .header-info {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 54%;
-        pointer-events: none;
+        position: static;
+        left: auto;
+        transform: none;
+        width: 100%;
+        pointer-events: auto;
       }
 
       .header-subtitle {
-        font-size: 11px;
+        font-size: 13px;
         letter-spacing: 0.02em;
         line-height: 1.15;
         white-space: normal;
@@ -875,15 +882,12 @@
 
     @media (max-width: 520px) {
       .header-subtitle {
-        font-size: 10px;
+        font-size: 12px;
       }
 
       .logo-wrap img {
-        height: 34px;
-      }
-
-      .header-info {
-        width: 56%;
+        height: 40px;
+        max-width: 190px;
       }
 
       .stats-row {
