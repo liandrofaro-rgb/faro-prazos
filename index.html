@@ -73,6 +73,7 @@
     .header-info {
       display: flex;
       flex-direction: column;
+      justify-content: center;
     }
 
     .header-logo-fallback {
@@ -91,11 +92,12 @@
     }
 
     .header-subtitle {
-      font-size: 11px;
-      font-weight: 400;
-      color: rgba(255,255,255,0.5);
-      letter-spacing: 0.06em;
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.82);
+      letter-spacing: 0.05em;
       text-transform: uppercase;
+      line-height: 1.1;
     }
 
     .header-badge {
@@ -1003,7 +1005,6 @@
   <div class="logo-wrap">
     <img src="./logo-faro.png" alt="Faro Advocacia" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend','<span class=&quot;header-logo-fallback&quot;>FARO</span>');">
     <div class="header-info">
-      <span class="header-title">Faro Advocacia &amp; Consultoria</span>
       <span class="header-subtitle">Controle de Prazos Processuais</span>
     </div>
   </div>
