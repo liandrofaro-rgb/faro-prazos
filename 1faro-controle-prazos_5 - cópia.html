@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faro Advocacia · Controle de Prazos</title>
+  <meta name="theme-color" content="#1a2b4a">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f5f4f2;
+      --white: #ffffff;
+      --navy: #1a2b4a;
+      --navy-light: #243556;
+      --gold: #c4932a;
+      --gold-light: #e8b84b;
+      --gold-pale: #fdf6e8;
+      --border: #e2ddd5;
+      --text: #1a1a1a;
+      --text-muted: #6b6258;
+      --text-dim: #a09488;
+      --danger: #c0614a;
+      --danger-pale: #fef2ef;
+      --warning: #c9a040;
+      --warning-pale: #fffbf0;
+      --success: #3d8a5e;
+      --success-pale: #f0faf5;
+      --radius: 10px;
+      --shadow: 0 2px 12px rgba(0,0,0,0.07);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 14px;
+    }
+
+    header {
+      background: var(--navy);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-wrap img {
+      height: 48px;
+      background: white;
+      border-radius: 8px;
+      padding: 4px 10px;
+      object-fit: contain;
+    }
+
+    .header-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.01em;
+    }
+
+    .header-subtitle {
+      font-size: 11px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .header-badge {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.03em;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      min-height: calc(100vh - 72px);
+    }
+
+    .sidebar {
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      padding: 28px 24px;
+      overflow-y: auto;
+      height: calc(100vh - 72px);
+      position: sticky;
+      top: 72px;
+    }
+
+    .sidebar-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 6px;
+    }
+
+    .field input, .field textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--text);
+      background: var(--white);
+      transition: border-color 0.15s;
+      outline: none;
+    }
+
+    .field input:focus, .field textarea:focus, .field select:focus {
+      border-color: var(--gold);
+    }
+
+    .field select {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1.5px solid var(--border);
+      font-size: 13px;
+      font-family: inherit;
+      background: var(--white);
+      color: var(--text);
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.15s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 30px;
+    }
+
+    .field textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .field input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .hint {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    .form-block-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--navy);
+      letter-spacing: 0.03em;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+    }
+
+    .calc-result {
+      background: var(--gold-pale);
+      border: 1.5px solid #e8d5a0;
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .calc-result .cr-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .calc-result .cr-date {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .calc-result .cr-day {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .alerts-preview {
+      display: none;
+      margin-bottom: 16px;
+    }
+
+    .alert-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+
+    .alert-chip.warn {
+      background: var(--warning-pale);
+      color: #7a5a10;
+    }
+
+    .alert-chip.urg {
+      background: var(--danger-pale);
+      color: #7a2a1a;
+    }
+
+    .alert-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .alert-dot.warn { background: var(--warning); }
+    .alert-dot.urg { background: var(--danger); }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-bottom: 8px;
+    }
+
+    .btn-primary:hover { background: var(--navy-light); }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 10px;
+      background: transparent;
+      color: var(--navy);
+      border: 1.5px solid var(--navy);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: none;
+    }
+
+    .btn-secondary:hover {
+      background: var(--navy);
+      color: #fff;
+    }
+
+    .btn-calc {
+      width: 100%;
+      padding: 10px;
+      background: transparent;
+      color: var(--gold);
+      border: 1.5px solid var(--gold);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-bottom: 12px;
+    }
+
+    .btn-calc:hover {
+      background: var(--gold-pale);
+    }
+
+    .recipients-section { margin-bottom: 16px; }
+
+    .recipients-section .lbl {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .recipient-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .recipient-item:last-child { border-bottom: none; }
+
+    .recipient-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .recipient-info .name {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .recipient-info .email {
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    .main {
+      padding: 28px 28px 80px;
+      overflow-y: auto;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+      border-left: 4px solid transparent;
+    }
+
+    .stat-card.total { border-left-color: var(--navy); }
+    .stat-card.alert2 { border-left-color: var(--warning); }
+    .stat-card.alert24 { border-left-color: var(--danger); }
+    .stat-card.ok { border-left-color: var(--success); }
+
+    .stat-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .stat-sub {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 3px;
+    }
+
+    .adv-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px 3px 4px;
+      border-radius: 20px;
+      letter-spacing: 0.01em;
+    }
+
+    .adv-avatar {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 20px 28px 4px;
+      margin-bottom: 0;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--border);
+      border-radius: 7px;
+      padding: 3px;
+    }
+
+    .filter-tab {
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.15s;
+    }
+
+    .filter-tab.active {
+      background: var(--white);
+      color: var(--text);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .prazo-list { display: flex; flex-direction: column; gap: 10px; padding: 16px 28px 28px; }
+
+    .prazo-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+      border-left: 4px solid var(--border);
+      transition: box-shadow 0.15s;
+      cursor: default;
+      position: relative;
+    }
+
+    .prazo-card:hover { box-shadow: var(--shadow-lg); }
+
+    .prazo-card.status-ok { border-left-color: var(--success); }
+    .prazo-card.status-warn { border-left-color: var(--warning); }
+    .prazo-card.status-urg { border-left-color: var(--danger); }
+    .prazo-card.status-expired { border-left-color: #ccc; opacity: 0.6; }
+
+    .prazo-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .prazo-processo {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.02em;
+      margin-bottom: 3px;
+    }
+
+    .prazo-desc {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      max-width: 100%;
+      line-height: 1.3;
+    }
+
+    .status-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+
+    .badge-ok { background: var(--success-pale); color: var(--success); }
+    .badge-warn { background: var(--warning-pale); color: #7a5a10; }
+    .badge-urg { background: var(--danger-pale); color: var(--danger); }
+    .badge-expired { background: #f0f0f0; color: #888; }
+
+    .prazo-dates {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .date-item .di-label {
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 2px;
+    }
+
+    .date-item .di-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .date-item .di-day {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .prazo-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    .prazo-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-icon {
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+
+    .btn-icon.email {
+      background: var(--gold-pale);
+      color: var(--gold);
+      border: 1px solid #e8d5a0;
+    }
+
+    .btn-icon.email:hover { background: #f5e8c0; }
+
+    .btn-icon.delete {
+      background: var(--danger-pale);
+      color: var(--danger);
+      border: 1px solid #f0c4ba;
+    }
+
+    .btn-icon.delete:hover { background: #fce4de; }
+
+    .view-tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0;
+    }
+
+    .view-tab {
+      padding: 9px 20px;
+      border: none;
+      background: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      border-radius: 4px 4px 0 0;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: color 0.15s;
+    }
+
+    .view-tab:hover { color: var(--navy); }
+
+    .view-tab.active {
+      color: var(--navy);
+      border-bottom-color: var(--navy);
+      background: rgba(26,58,92,0.04);
+    }
+
+    .cumpridos-count {
+      background: var(--gold);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 10px;
+      padding: 1px 7px;
+      min-width: 18px;
+      text-align: center;
+      display: none;
+    }
+
+    .tribunal-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: var(--gold-pale);
+      color: var(--gold);
+      border: 1px solid #e0c96a;
+      border-radius: 4px;
+      padding: 1px 6px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .prazo-partes {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .partes-vs {
+      color: var(--gold);
+      font-weight: 700;
+      margin: 0 4px;
+    }
+
+    .cumprido-card {
+      opacity: 0.82;
+      border-left: 4px solid #27ae60 !important;
+      background: #f9fffa !important;
+    }
+
+    .badge-cumprido {
+      background: #e6f4ec;
+      color: #27ae60;
+      border: 1px solid #a8daba;
+    }
+
+    .btn-icon.concluir {
+      background: #e6f4ec;
+      color: #27ae60;
+      border: 1px solid #a8daba;
+      font-weight: 600;
+    }
+    .btn-icon.concluir:hover { background: #c8ecd4; }
+
+    .btn-icon.whats {
+      background: #e7fbe9;
+      color: #25d366;
+      border: 1px solid #a3e8ac;
+      font-weight: 600;
+    }
+    .btn-icon.whats:hover { background: #c6f5cc; }
+
+    .btn-icon.reabrir {
+      background: var(--gold-pale);
+      color: var(--gold);
+      border: 1px solid #e8d5a0;
+    }
+    .btn-icon.reabrir:hover { background: #f5e8c0; }
+
+    .prazo-card.status-urg {
+      border-left: 4px solid var(--danger);
+      background: #fff8f8;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      opacity: 0.3;
+    }
+
+    .empty-state p { font-size: 14px; }
+    .empty-state small { font-size: 12px; color: var(--text-dim); }
+
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--navy);
+      color: #fff;
+      border-radius: 8px;
+      padding: 12px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s;
+      pointer-events: none;
+      z-index: 200;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAABACAQAAAD8GO2jAAAAAmJLR0QA/4ePzL8AAAEGSURBVHja7dixDcJAFAXQwL8Jm7AFO7ADu7ADu7ADu7ADu7ADu7B5v0B0n8Wg1hG0mJ4v5mQh5d7f9mA0AAAAAAAAAAAAAAAAAAAAAAAB4cWj7Ck0b5m3m8Xv1q6V8j+0c4jM2H0r2i6Yy1m0J5x3h7M3G4j8r8J7x5m3P5WgR6y3Q5nL3w7tK2gW5n7v5bQKf7tJ1z2i7V0Q3m0x7Q3V7kq8Q9q9m3n1n3mM5W9wY6i9Yt3m7p9Qm2q7Wv2LwH8mJ0mW0r0p0pYd2d4f5VY4W+0mJ8qv0l4kM7k9z0f8qv1n5o8tq5b7c9m3O4W0b6mN4n7H1mW+9b0u1nP2mH4n5n7O2r5x8mT8AAAAAAAAAAAAAAAAAAAAAAAB8A3k1Gv+V2J5YAAAAAElFTkSuQmCC" alt="Faro Advocacia">
+    <div class="header-info">
+      <span class="header-title">Faro Advocacia &amp; Consultoria</span>
+      <span class="header-subtitle">Controle de Prazos Processuais</span>
+    </div>
+  </div>
+  <div class="header-badge">Sistema de Gestão</div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-title">Cadastrar Prazo</div>
+
+    <div class="form-block-label">📁 Dados do processo</div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Número do Processo</label>
+        <input type="text" id="f-processo" placeholder="0000000-00.0000.0.00.0000">
+      </div>
+      <div class="field">
+        <label>Tribunal</label>
+        <input type="text" id="f-tribunal" placeholder="Ex: TJPA, TRF1…">
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Autor</label>
+        <input type="text" id="f-autor" placeholder="Nome do autor">
+      </div>
+      <div class="field">
+        <label>Réu</label>
+        <input type="text" id="f-reu" placeholder="Nome do réu">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Advogado responsável</label>
+      <select id="f-advogado">
+        <option value="">Selecione o responsável</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Descrição do prazo</label>
+      <textarea id="f-desc" placeholder="Ex: Contestação, Recurso, Manifestação..."></textarea>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="form-block-label">📅 Datas e prazo</div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Início (publicação)</label>
+        <input type="date" id="f-inicio">
+      </div>
+      <div class="field">
+        <label>Prazo (dias úteis)</label>
+        <input type="number" id="f-prazo" placeholder="15" min="1">
+        <div class="hint">Ou informe a data final abaixo</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Data final (opcional)</label>
+      <input type="date" id="f-fim-manual">
+      <div class="hint">Se informar, ignora o prazo em dias</div>
+    </div>
+
+    <button class="btn-calc" onclick="calcularPreview()">⟳ Calcular data final</button>
+
+    <div class="calc-result" id="calc-result">
+      <div class="cr-label">Vencimento calculado</div>
+      <div class="cr-date" id="cr-date">—</div>
+      <div class="cr-day" id="cr-day"></div>
+    </div>
+
+    <div class="alerts-preview" id="alerts-preview">
+      <div class="alert-chip warn">
+        <div class="alert-dot warn"></div>
+        <span>2 dias antes: <strong id="alerta2d-prev">—</strong></span>
+      </div>
+      <div class="alert-chip urg">
+        <div class="alert-dot urg"></div>
+        <span>24h antes: <strong id="alerta24h-prev">—</strong></span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="recipients-section">
+      <span class="lbl">Alertas enviados para</span>
+      <div class="recipient-item">
+        <div class="recipient-avatar">LF</div>
+        <div class="recipient-info">
+          <div class="name">Liandro Faro</div>
+          <div class="email">liandro@faroadvocacia.adv.br</div>
+        </div>
+      </div>
+      <div class="recipient-item">
+        <div class="recipient-avatar">CC</div>
+        <div class="recipient-info">
+          <div class="name">Camille Carvalho</div>
+          <div class="email">camille@faroadvocacia.adv.br</div>
+        </div>
+      </div>
+      <div class="recipient-item">
+        <div class="recipient-avatar">TS</div>
+        <div class="recipient-info">
+          <div class="name">Thássila Smith</div>
+          <div class="email">thassila@faroadvocacia.adv.br</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <button class="btn-primary" onclick="salvarPrazo()">+ Adicionar ao painel</button>
+    <button class="btn-secondary" id="btn-email-geral" onclick="enviarEmailGeral()">↗ Enviar resumo por e-mail</button>
+  </aside>
+
+  <main class="main">
+    <div class="stats-row">
+      <div class="stat-card total">
+        <div class="stat-label">Total de prazos</div>
+        <div class="stat-value" id="stat-total">0</div>
+        <div class="stat-sub">cadastrados</div>
+      </div>
+      <div class="stat-card alert2">
+        <div class="stat-label">Alertas em 2 dias</div>
+        <div class="stat-value" id="stat-a2">0</div>
+        <div class="stat-sub">prazos próximos</div>
+      </div>
+      <div class="stat-card alert24">
+        <div class="stat-label">Vence amanhã</div>
+        <div class="stat-value" id="stat-a24">0</div>
+        <div class="stat-sub">urgente</div>
+      </div>
+      <div class="stat-card ok">
+        <div class="stat-label">Dentro do prazo</div>
+        <div class="stat-value" id="stat-ok">0</div>
+        <div class="stat-sub">sem urgência</div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="view-tabs">
+        <button class="view-tab active" id="vtab-ativos" onclick="trocarView('ativos')">Prazos Ativos</button>
+        <button class="view-tab" id="vtab-cumpridos" onclick="trocarView('cumpridos')">✔ Cumpridos <span id="badge-cumpridos" class="cumpridos-count">0</span></button>
+      </div>
+
+      <div class="filter-tabs" id="filter-tabs-ativos">
+        <button class="filter-tab active" onclick="filtrar('todos', this)">Todos</button>
+        <button class="filter-tab" onclick="filtrar('urgentes', this)">Urgentes</button>
+        <button class="filter-tab" onclick="filtrar('ok', this)">Em dia</button>
+        <button class="filter-tab" onclick="filtrar('vencidos', this)">Vencidos</button>
+      </div>
+    </div>
+
+    <div class="prazo-list" id="prazo-list">
+      <div class="empty-state">
+        <div class="empty-icon">⏳</div>
+        <p>Nenhum prazo cadastrado</p>
+        <small>Use o formulário ao lado para adicionar prazos</small>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "https://dhpjlblafvlvcrgcvwxf.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_KYFQzLFMjueBUre97McgoA_bwlpjDQs";
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let SESSION = null;
+  let PROFILES_MAP = {};
+  let prazos = [];
+  let prazosCumpridos = [];
+  let filtroAtivo = 'todos';
+  let viewAtiva = 'ativos';
+  let realtimeChannel = null;
+
+  const DIAS = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  const MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  const EMAILS = 'liandro@faroadvocacia.adv.br,camille@faroadvocacia.adv.br,thassila@faroadvocacia.adv.br';
+
+  const whatsMap = {
+    'Liandro Faro': '5591991585576',
+    'Camille Carvalho': '5591993661088',
+    'Thássila Smith': '5591981581361',
+  };
+
+  sb.auth.onAuthStateChange((_event, session) => {
+    SESSION = session;
+  });
+
+  async function ensureAuth() {
+    const { data, error } = await sb.auth.getSession();
+    if (error) {
+      console.error(error);
+      showToast('Erro ao verificar sessão');
+      return false;
+    }
+
+    SESSION = data.session;
+    if (SESSION) return true;
+
+    const email = prompt("Digite seu e-mail para receber o link de acesso:");
+    if (!email) return false;
+
+    const { error: loginError } = await sb.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: window.location.origin + window.location.pathname
+      }
+    });
+
+    if (loginError) {
+      console.error(loginError);
+      alert("Erro ao enviar link: " + loginError.message);
+      return false;
+    }
+
+    alert("Enviei um link de acesso para seu e-mail. Abra o e-mail e clique no link.");
+    return false;
+  }
+
+  async function preencherResponsavel() {
+    const { data, error } = await sb
+      .from("profiles")
+      .select("id, nome, role")
+      .order("nome", { ascending: true });
+
+    if (error) {
+      console.error(error);
+      showToast('Erro ao carregar responsáveis');
+      return;
+    }
+
+    PROFILES_MAP = {};
+    (data || []).forEach(p => PROFILES_MAP[p.id] = p.nome);
+
+    const selResp = document.getElementById("f-advogado");
+    selResp.innerHTML = `<option value="">Selecione o responsável</option>`;
+
+    (data || []).forEach(u => {
+      selResp.insertAdjacentHTML("beforeend", `<option value="${u.id}">${escHtml(u.nome)}</option>`);
+    });
+  }
+
+  function getFeriados(ano) {
+    const fixos = [
+      `${ano}-01-01`,`${ano}-04-21`,`${ano}-05-01`,`${ano}-09-07`,
+      `${ano}-10-12`,`${ano}-11-02`,`${ano}-11-15`,`${ano}-11-20`,`${ano}-12-25`
+    ];
+
+    function pascoa(y) {
+      const a=y%19,b=Math.floor(y/100),c=y%100;
+      const d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25);
+      const g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30;
+      const i=Math.floor(c/4),k=c%4;
+      const l=(32+2*e+2*i-h-k)%7;
+      const m=Math.floor((a+11*h+22*l)/451);
+      const mes=Math.floor((h+l-7*m+114)/31);
+      const dia=((h+l-7*m+114)%31)+1;
+      return new Date(y,mes-1,dia);
+    }
+
+    const p = pascoa(ano);
+    const ad = (d,n) => { const r = new Date(d); r.setDate(r.getDate()+n); return r; };
+    const fmt = d => d.toISOString().split('T')[0];
+
+    return new Set([
+      ...fixos,
+      fmt(ad(p,-48)),
+      fmt(ad(p,-47)),
+      fmt(ad(p,-2)),
+      fmt(p),
+      fmt(ad(p,60))
+    ]);
+  }
+
+  function ehDiaUtil(date) {
+    const d = date.getDay();
+    if (d === 0 || d === 6) return false;
+    return !getFeriados(date.getFullYear()).has(date.toISOString().split('T')[0]);
+  }
+
+  function addDiasUteis(date, dias) {
+    let d = new Date(date), c = 0;
+    while (c < dias) {
+      d.setDate(d.getDate() + 1);
+      if (ehDiaUtil(d)) c++;
+    }
+    return d;
+  }
+
+  function subtractDiasUteis(date, dias) {
+    let d = new Date(date), c = 0;
+    while (c < dias) {
+      d.setDate(d.getDate() - 1);
+      if (ehDiaUtil(d)) c++;
+    }
+    return d;
+  }
+
+  function fmtDate(d) {
+    return `${String(d.getDate()).padStart(2,'0')}/${MESES[d.getMonth()]}/${d.getFullYear()}`;
+  }
+
+  function difsUteis(d1, d2) {
+    let d = new Date(d1), c = 0, dir = d2 > d1 ? 1 : -1;
+    while (d.toDateString() !== d2.toDateString()) {
+      d.setDate(d.getDate() + dir);
+      if (ehDiaUtil(d)) c += dir;
+    }
+    return c;
+  }
+
+  function diasCorridos(d1, d2) {
+    return Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
+  }
+
+  function escHtml(s) {
+    return String(s || '')
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;');
+  }
+
+  function getAdvStyle(nome) {
+    const advMap = {
+      'Liandro Faro': { initials: 'LF', color: '#1a3a5c' },
+      'Camille Carvalho': { initials: 'CC', color: '#8b6914' },
+      'Thássila Smith': { initials: 'TS', color: '#2d6a4f' },
+    };
+    return advMap[nome] || { initials: (nome || '?').substring(0,2).toUpperCase(), color: '#999' };
+  }
+
+  function mapPrazoBanco(row) {
+    return {
+      id: row.id,
+      processo: row.processo,
+      tribunal: row.tribunal || '',
+      autor: row.autor,
+      reu: row.reu,
+      advogadoId: row.advogado_id || '',
+      advogado: row.profiles?.nome || PROFILES_MAP[row.advogado_id] || '—',
+      desc: row.descricao,
+      inicio: row.inicio,
+      fim: row.fim,
+      dias: row.dias ?? '—',
+      statusBanco: row.status,
+      criadoEm: row.criado_em,
+      concluidoEm: row.concluido_em
+    };
+  }
+
+  async function carregarPrazos() {
+    const { data, error } = await sb
+      .from('prazos')
+      .select(`
+        id,
+        processo,
+        tribunal,
+        autor,
+        reu,
+        advogado_id,
+        descricao,
+        inicio,
+        fim,
+        dias,
+        status,
+        criado_em,
+        concluido_em,
+        profiles:advogado_id ( id, nome )
+      `)
+      .order('fim', { ascending: true });
+
+    if (error) {
+      console.error(error);
+      showToast('Erro ao carregar prazos');
+      return;
+    }
+
+    const todos = (data || []).map(mapPrazoBanco);
+    prazos = todos.filter(p => p.statusBanco === 'ativo');
+    prazosCumpridos = todos.filter(p => p.statusBanco === 'cumprido');
+
+    if (viewAtiva === 'ativos') renderPrazos();
+    else renderCumpridos();
+
+    atualizarStats();
+    atualizarBadgeCumpridos();
+
+    document.getElementById('btn-email-geral').style.display = prazos.length > 0 ? 'block' : 'none';
+  }
+
+  async function salvarPrazo() {
+    const processo = document.getElementById('f-processo').value.trim();
+    const tribunal = document.getElementById('f-tribunal').value.trim();
+    const autor = document.getElementById('f-autor').value.trim();
+    const reu = document.getElementById('f-reu').value.trim();
+    const advogado_id = document.getElementById('f-advogado').value;
+    const descricao = document.getElementById('f-desc').value.trim();
+    const inicio = document.getElementById('f-inicio').value;
+    const fim = document.getElementById('f-fim-manual').value;
+    const dias = parseInt(document.getElementById('f-prazo').value) || null;
+
+    if (!SESSION?.user) { showToast('Faça login primeiro'); return; }
+    if (!processo) { showToast('Informe o número do processo'); return; }
+    if (!autor) { showToast('Informe o Autor'); return; }
+    if (!reu) { showToast('Informe o Réu'); return; }
+    if (!advogado_id) { showToast('Selecione o advogado responsável'); return; }
+    if (!descricao) { showToast('Informe a descrição do prazo'); return; }
+    if (!inicio) { showToast('Informe a data de início'); return; }
+    if (!fim) { showToast('Informe ou calcule a data final'); return; }
+
+    const { error } = await sb
+      .from('prazos')
+      .insert({
+        processo,
+        tribunal,
+        autor,
+        reu,
+        advogado_id,
+        descricao,
+        inicio,
+        fim,
+        dias,
+        status: 'ativo',
+        criado_por: SESSION.user.id
+      });
+
+    if (error) {
+      console.error(error);
+      showToast('Erro ao salvar prazo');
+      return;
+    }
+
+    limparForm();
+    showToast('Prazo cadastrado com sucesso!');
+  }
+
+  async function deletarPrazo(id) {
+    if (!confirm('Remover este prazo?')) return;
+
+    const { error } = await sb.from('prazos').delete().eq('id', id);
+    if (error) {
+      console.error(error);
+      showToast('Erro ao remover prazo');
+      return;
+    }
+
+    showToast('Prazo removido');
+  }
+
+  async function concluirPrazo(id) {
+    const { error } = await sb
+      .from('prazos')
+      .update({
+        status: 'cumprido',
+        concluido_em: new Date().toISOString()
+      })
+      .eq('id', id);
+
+    if (error) {
+      console.error(error);
+      showToast('Erro ao concluir prazo');
+      return;
+    }
+
+    showToast('✔ Prazo marcado como cumprido!');
+  }
+
+  async function reabrirPrazo(id) {
+    const { error } = await sb
+      .from('prazos')
+      .update({
+        status: 'ativo',
+        concluido_em: null
+      })
+      .eq('id', id);
+
+    if (error) {
+      console.error(error);
+      showToast('Erro ao reabrir prazo');
+      return;
+    }
+
+    showToast('Prazo reaberto nos ativos');
+  }
+
+  async function deletarCumprido(id) {
+    if (!confirm('Excluir permanentemente este registro?')) return;
+
+    const { error } = await sb.from('prazos').delete().eq('id', id);
+    if (error) {
+      console.error(error);
+      showToast('Erro ao excluir registro');
+      return;
+    }
+
+    showToast('Registro excluído');
+  }
+
+  function assinarRealtime() {
+    if (realtimeChannel) {
+      sb.removeChannel(realtimeChannel);
+    }
+
+    realtimeChannel = sb
+      .channel('prazos-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'prazos' }, async () => {
+        await carregarPrazos();
+      })
+      .subscribe((status) => {
+        console.log('Realtime status:', status);
+      });
+  }
+
+  function getStatus(prazo) {
+    const hoje = new Date();
+    hoje.setHours(0,0,0,0);
+
+    const fim = new Date(prazo.fim + 'T12:00:00');
+    const a2 = subtractDiasUteis(fim, 2);
+    const a24 = subtractDiasUteis(fim, 1);
+
+    if (fim < hoje) return 'expired';
+    if (hoje >= a24) return 'urg';
+    if (hoje >= a2) return 'warn';
+    return 'ok';
+  }
+
+  function atualizarStats() {
+    const total = prazos.length;
+    const a2 = prazos.filter(p => getStatus(p) === 'warn').length;
+    const a24 = prazos.filter(p => getStatus(p) === 'urg').length;
+    const ok = prazos.filter(p => getStatus(p) === 'ok').length;
+
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-a2').textContent = a2;
+    document.getElementById('stat-a24').textContent = a24;
+    document.getElementById('stat-ok').textContent = ok;
+  }
+
+  function calcularPreview() {
+    const inicioVal = document.getElementById('f-inicio').value;
+    const prazoVal = parseInt(document.getElementById('f-prazo').value);
+    const fimManual = document.getElementById('f-fim-manual').value;
+
+    if (!inicioVal) { showToast('Informe a data de início'); return; }
+    if (!prazoVal && !fimManual) { showToast('Informe o prazo ou a data final'); return; }
+
+    const inicio = new Date(inicioVal + 'T12:00:00');
+    let fim = fimManual ? new Date(fimManual + 'T12:00:00') : addDiasUteis(inicio, prazoVal);
+
+    document.getElementById('f-fim-manual').value = fim.toISOString().split('T')[0];
+
+    const a2d = subtractDiasUteis(fim, 2);
+    const a24 = subtractDiasUteis(fim, 1);
+
+    document.getElementById('cr-date').textContent = fmtDate(fim);
+    document.getElementById('cr-day').textContent = DIAS[fim.getDay()];
+    document.getElementById('alerta2d-prev').textContent = fmtDate(a2d) + ' · ' + DIAS[a2d.getDay()];
+    document.getElementById('alerta24h-prev').textContent = fmtDate(a24) + ' · ' + DIAS[a24.getDay()];
+
+    document.getElementById('calc-result').style.display = 'block';
+    document.getElementById('alerts-preview').style.display = 'block';
+  }
+
+  function renderPrazos() {
+    const list = document.getElementById('prazo-list');
+
+    let filtrados = prazos;
+    if (filtroAtivo === 'urgentes') {
+      filtrados = prazos.filter(p => ['urg', 'warn'].includes(getStatus(p)));
+    } else if (filtroAtivo === 'ok') {
+      filtrados = prazos.filter(p => getStatus(p) === 'ok');
+    } else if (filtroAtivo === 'vencidos') {
+      filtrados = prazos.filter(p => getStatus(p) === 'expired');
+    }
+
+    if (filtrados.length === 0) {
+      list.innerHTML = `<div class="empty-state">
+        <div class="empty-icon">⏳</div>
+        <p>${filtroAtivo==='todos'?'Nenhum prazo cadastrado':'Nenhum prazo nesta categoria'}</p>
+        <small>${filtroAtivo==='todos'?'Use o formulário ao lado para adicionar prazos':''}</small>
+      </div>`;
+      return;
+    }
+
+    const ordem = { urg:0, warn:1, ok:2, expired:3 };
+    const sorted = [...filtrados].sort((a,b) => {
+      const sa = getStatus(a), sb = getStatus(b);
+      if (ordem[sa] !== ordem[sb]) return ordem[sa] - ordem[sb];
+      return new Date(a.fim) - new Date(b.fim);
+    });
+
+    list.innerHTML = sorted.map(p => {
+      const st = getStatus(p);
+      const inicio = new Date(p.inicio + 'T12:00:00');
+      const fim = new Date(p.fim + 'T12:00:00');
+
+      const badgeMap = {
+        ok: '<span class="status-badge badge-ok">Em dia</span>',
+        warn: '<span class="status-badge badge-warn">⚠ 2 dias</span>',
+        urg: '<span class="status-badge badge-urg">🔴 24h</span>',
+        expired: '<span class="status-badge badge-expired">Vencido</span>'
+      };
+
+      const adv = getAdvStyle(p.advogado);
+      const advHtml = p.advogado ? `
+        <span class="adv-chip" style="background:${adv.color}20; color:${adv.color}; border:1px solid ${adv.color}40">
+          <span class="adv-avatar" style="background:${adv.color}">${adv.initials}</span>
+          ${escHtml(p.advogado)}
+        </span>` : '';
+
+      return `
+        <div class="prazo-card status-${st}">
+          <div class="prazo-top">
+            <div>
+              <div class="prazo-processo">
+                ${escHtml(p.processo || '—')}
+                ${p.tribunal ? ' <span class="tribunal-tag">' + escHtml(p.tribunal) + '</span>' : ''}
+              </div>
+              <div class="prazo-partes">${escHtml(p.autor || '—')} <span class="partes-vs">×</span> ${escHtml(p.reu || '—')}</div>
+              <div class="prazo-desc">${escHtml(p.desc)}</div>
+            </div>
+            ${badgeMap[st]}
+          </div>
+
+          <div class="prazo-dates">
+            <div class="date-item">
+              <div class="di-label">Início</div>
+              <div class="di-value">${fmtDate(inicio)}</div>
+              <div class="di-day">${DIAS[inicio.getDay()].substring(0,3)}</div>
+            </div>
+            <div class="date-item">
+              <div class="di-label">Dias úteis</div>
+              <div class="di-value">${p.dias}</div>
+              <div class="di-day">dias úteis</div>
+            </div>
+            <div class="date-item">
+              <div class="di-label">Vencimento</div>
+              <div class="di-value">${fmtDate(fim)}</div>
+              <div class="di-day">${DIAS[fim.getDay()].substring(0,3)}</div>
+            </div>
+          </div>
+
+          <div class="prazo-footer">
+            <div></div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+              ${advHtml}
+              <div class="prazo-actions">
+                <button class="btn-icon whats" onclick="enviarWhatsApp(${p.id})">📲 WhatsApp</button>
+                <button class="btn-icon concluir" onclick="concluirPrazo(${p.id})">✔ Concluído</button>
+                <button class="btn-icon email" onclick="enviarEmail(${p.id})">✉ E-mail</button>
+                <button class="btn-icon delete" onclick="deletarPrazo(${p.id})">✕ Remover</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderCumpridos() {
+    const list = document.getElementById('prazo-list');
+
+    if (prazosCumpridos.length === 0) {
+      list.innerHTML = `<div class="empty-state">
+        <div class="empty-icon">✅</div>
+        <p>Nenhum prazo cumprido ainda</p>
+        <small>Ao marcar um prazo como concluído, ele aparecerá aqui</small>
+      </div>`;
+      return;
+    }
+
+    list.innerHTML = prazosCumpridos.map(p => {
+      const fim = new Date(p.fim+'T12:00:00');
+      const conc = p.concluidoEm ? new Date(p.concluidoEm) : null;
+      const adv = getAdvStyle(p.advogado);
+      const advHtml = p.advogado ? `
+        <span class="adv-chip" style="background:${adv.color}20;color:${adv.color};border:1px solid ${adv.color}40">
+          <span class="adv-avatar" style="background:${adv.color}">${adv.initials}</span>
+          ${escHtml(p.advogado)}
+        </span>` : '';
+
+      return `
+        <div class="prazo-card cumprido-card">
+          <div class="prazo-top">
+            <div>
+              <div class="prazo-processo">${escHtml(p.processo||'—')}${p.tribunal ? ' <span class="tribunal-tag">' + escHtml(p.tribunal) + '</span>' : ''}</div>
+              <div class="prazo-partes">${escHtml(p.autor||'—')} <span class="partes-vs">×</span> ${escHtml(p.reu||'—')}</div>
+              <div class="prazo-desc">${escHtml(p.desc)}</div>
+            </div>
+            <span class="status-badge badge-cumprido">✔ Cumprido</span>
+          </div>
+
+          <div class="prazo-dates">
+            <div class="date-item">
+              <div class="di-label">Vencimento</div>
+              <div class="di-value">${fmtDate(fim)}</div>
+              <div class="di-day">${DIAS[fim.getDay()].substring(0,3)}</div>
+            </div>
+            <div class="date-item">
+              <div class="di-label">Concluído em</div>
+              <div class="di-value">${conc ? conc.toLocaleDateString('pt-BR') : '—'}</div>
+              <div class="di-day">${conc ? DIAS[conc.getDay()].substring(0,3) : ''}</div>
+            </div>
+          </div>
+
+          <div class="prazo-footer">
+            <div>${advHtml}</div>
+            <div class="prazo-actions">
+              <button class="btn-icon reabrir" onclick="reabrirPrazo(${p.id})">↩ Reabrir</button>
+              <button class="btn-icon delete" onclick="deletarCumprido(${p.id})">✕ Excluir</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filtrar(filtro, btn) {
+    filtroAtivo = filtro;
+    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderPrazos();
+  }
+
+  function trocarView(view) {
+    viewAtiva = view;
+    document.getElementById('vtab-ativos').classList.toggle('active', view==='ativos');
+    document.getElementById('vtab-cumpridos').classList.toggle('active', view==='cumpridos');
+    document.getElementById('filter-tabs-ativos').style.display = view==='ativos' ? 'flex' : 'none';
+
+    if (view === 'ativos') renderPrazos();
+    else renderCumpridos();
+  }
+
+  function atualizarBadgeCumpridos() {
+    const el = document.getElementById('badge-cumpridos');
+    el.textContent = prazosCumpridos.length;
+    el.style.display = prazosCumpridos.length > 0 ? 'inline-flex' : 'none';
+  }
+
+  function limparForm() {
+    document.getElementById('f-processo').value = '';
+    document.getElementById('f-tribunal').value = '';
+    document.getElementById('f-autor').value = '';
+    document.getElementById('f-reu').value = '';
+    document.getElementById('f-advogado').value = '';
+    document.getElementById('f-desc').value = '';
+    document.getElementById('f-prazo').value = '';
+    document.getElementById('f-fim-manual').value = '';
+    document.getElementById('calc-result').style.display = 'none';
+    document.getElementById('alerts-preview').style.display = 'none';
+  }
+
+  function enviarWhatsApp(id) {
+    const p = prazos.find(x => x.id === id);
+    if (!p) return;
+
+    const fim = new Date(p.fim + 'T12:00:00');
+    const phone = whatsMap[p.advogado] || '';
+    if (!phone) { showToast('Número não configurado para este advogado'); return; }
+
+    const msg = encodeURIComponent(
+`⚠️ *ALERTA DE PRAZO — FARO ADVOCACIA*
+
+📋 *Processo:* ${p.processo || '—'}${p.tribunal ? ' (' + p.tribunal + ')' : ''}
+👤 *Partes:* ${p.autor || '—'} × ${p.reu || '—'}
+📝 *Tipo:* ${p.desc}
+📅 *Vencimento:* ${fmtDate(fim)} (${DIAS[fim.getDay()]})`
+    );
+
+    window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+    showToast('Abrindo WhatsApp...');
+  }
+
+  function enviarEmail(id) {
+    const p = prazos.find(x => x.id === id);
+    if (!p) return;
+
+    const fim = new Date(p.fim+'T12:00:00');
+    const inicio = new Date(p.inicio+'T12:00:00');
+    const a2d = subtractDiasUteis(fim, 2);
+    const a24h = subtractDiasUteis(fim, 1);
+
+    const assunto = encodeURIComponent(`[Prazo] ${p.processo || p.desc} — ${p.autor || ''} × ${p.reu || ''} — vence ${fmtDate(fim)}`);
+    const corpo = encodeURIComponent(
+`Prezados,
+
+Seguem as informações do prazo:
+
+Processo: ${p.processo || '—'}${p.tribunal ? ' — ' + p.tribunal : ''}
+Autor: ${p.autor || '—'}
+Réu: ${p.reu || '—'}
+Advogado responsável: ${p.advogado || '—'}
+Tipo: ${p.desc}
+Início (publicação): ${fmtDate(inicio)} — ${DIAS[inicio.getDay()]}
+Vencimento: ${fmtDate(fim)} — ${DIAS[fim.getDay()]}
+Dias úteis: ${p.dias}
+
+Alertas:
+• 2 dias úteis antes: ${fmtDate(a2d)} — ${DIAS[a2d.getDay()]}
+• 24h antes: ${fmtDate(a24h)} — ${DIAS[a24h.getDay()]}
+
+Faro Advocacia & Consultoria`
+    );
+
+    window.location.href = `mailto:${EMAILS}?subject=${assunto}&body=${corpo}`;
+    showToast('Abrindo cliente de e-mail...');
+  }
+
+  function enviarEmailGeral() {
+    if (prazos.length === 0) {
+      showToast('Nenhum prazo cadastrado');
+      return;
+    }
+
+    const linhas = prazos.map(p => {
+      const fim = new Date(p.fim+'T12:00:00');
+      return `• Proc. ${p.processo || '—'} | ${p.autor || '—'} × ${p.reu || '—'}
+  ${p.desc}
+  Vencimento: ${fmtDate(fim)} (${DIAS[fim.getDay()]})
+  Responsável: ${p.advogado || '—'}`;
+    }).join('\n\n');
+
+    const assunto = encodeURIComponent(`[Faro Advocacia] Resumo de Prazos — ${new Date().toLocaleDateString('pt-BR')}`);
+    const corpo = encodeURIComponent(`Prezados,\n\nSeguem os prazos ativos:\n\n${linhas}\n\nFaro Advocacia & Consultoria`);
+    window.location.href = `mailto:${EMAILS}?subject=${assunto}&body=${corpo}`;
+    showToast('Abrindo cliente de e-mail...');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  async function initApp() {
+    document.getElementById('f-inicio').valueAsDate = new Date();
+
+    const ok = await ensureAuth();
+    if (!ok) return;
+
+    await preencherResponsavel();
+    await carregarPrazos();
+    assinarRealtime();
+  }
+
+  initApp();
+</script>
+</body>
+</html>

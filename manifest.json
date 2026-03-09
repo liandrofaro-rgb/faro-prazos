@@ -1,0 +1,17 @@
+{
+  "name": "Faro Advocacia - Controle de Prazos",
+  "short_name": "Faro Prazos",
+  "description": "Gestão de prazos jurídicos em tempo real",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1a2b4a",
+  "theme_color": "#c4932a",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2693/2693507.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
