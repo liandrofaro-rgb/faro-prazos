@@ -192,6 +192,20 @@
       padding-right: 30px;
     }
 
+    .field select[multiple] {
+      min-height: 110px;
+      padding-right: 10px;
+      background-image: none;
+    }
+
+    .field select[multiple] option {
+      padding: 6px 8px;
+    }
+
+    .field select.hidden-multi {
+      display: none;
+    }
+
     .field textarea {
       resize: vertical;
       min-height: 60px;
@@ -209,6 +223,155 @@
       font-size: 10px;
       color: var(--text-dim);
       margin-top: 4px;
+    }
+
+    .resp-chip-list {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .adv-more-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #faf9f7;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .responsaveis-picker {
+      display: grid;
+      gap: 6px;
+    }
+
+    .responsavel-option {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      border-radius: 8px;
+      padding: 9px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      text-align: left;
+    }
+
+    .responsavel-option:hover {
+      border-color: var(--gold);
+      background: #fcfaf4;
+    }
+
+    .responsavel-option.selected {
+      border-color: var(--gold);
+      background: var(--gold-pale);
+    }
+
+    .responsavel-option.primary {
+      box-shadow: inset 0 0 0 1px rgba(196, 147, 42, 0.28);
+    }
+
+    .responsavel-main {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .responsavel-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 8px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .responsavel-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .responsavel-text strong {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .responsavel-text span {
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+
+    .responsavel-side {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .responsavel-primary-badge {
+      display: none;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: var(--gold);
+      color: #fff;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .responsavel-option.primary .responsavel-primary-badge {
+      display: inline-flex;
+    }
+
+    .responsavel-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .responsavel-check::after {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border-radius: 50%;
+      background: transparent;
+      transition: background 0.15s;
+    }
+
+    .responsavel-option.selected .responsavel-check {
+      border-color: var(--gold);
+      background: #fff;
+    }
+
+    .responsavel-option.selected .responsavel-check::after {
+      background: var(--gold);
     }
 
     .form-block-label {
@@ -482,6 +645,78 @@
       padding: 3px;
     }
 
+    .section-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      flex: 1 1 320px;
+      min-width: 240px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 42px 0 40px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 500;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .search-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(196, 147, 42, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: var(--text-dim);
+      pointer-events: none;
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: transparent;
+      color: var(--text-dim);
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .search-clear.show {
+      display: inline-flex;
+    }
+
+    .search-clear:hover {
+      background: #f2eee7;
+      color: var(--text);
+    }
+
     .filter-tab {
       padding: 5px 12px;
       border-radius: 5px;
@@ -543,6 +778,31 @@
       line-height: 1.3;
     }
 
+    .prazo-note {
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #fff1ee;
+      border: 1px solid #f2c9c1;
+    }
+
+    .prazo-note-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #c95f4a;
+      margin-bottom: 3px;
+    }
+
+    .prazo-note-text {
+      font-size: 12px;
+      line-height: 1.4;
+      color: #7a4a40;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
     .status-badge {
       font-size: 10px;
       font-weight: 600;
@@ -557,6 +817,7 @@
     .badge-warn { background: var(--warning-pale); color: #7a5a10; }
     .badge-urg { background: var(--danger-pale); color: var(--danger); }
     .badge-expired { background: #f0f0f0; color: #888; }
+    .badge-nao-cumprido { background: var(--danger-pale); color: var(--danger); }
 
     .prazo-dates {
       display: grid;
@@ -591,30 +852,71 @@
       justify-content: space-between;
       padding-top: 10px;
       border-top: 1px solid var(--border);
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .prazo-footer-left {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .prazo-footer-right {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      min-width: fit-content;
     }
 
     .prazo-actions {
       display: flex;
       gap: 6px;
+      flex: 0 0 auto;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
     .btn-icon {
-      padding: 5px 10px;
-      border-radius: 5px;
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 6px;
       font-size: 11px;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
-      border: none;
+      border: 1px solid transparent;
       transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+      box-sizing: border-box;
     }
 
-    .btn-icon.email {
-      background: var(--gold-pale);
-      color: var(--gold);
-      border: 1px solid #e8d5a0;
+    .btn-icon.responsavel {
+      display: inline-flex;
+      align-items: center;
+      background: #eef3ff;
+      color: #1a4fb8;
+      border: 1px solid #bcd0ff;
+      font-weight: 600;
+      flex: 0 0 auto;
+      height: 30px;
+      min-width: 30px;
+      padding: 0 7px;
+      box-sizing: border-box;
+      justify-content: center;
     }
 
-    .btn-icon.email:hover { background: #f5e8c0; }
+    .responsaveis-list {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      flex-wrap: wrap;
+      min-width: 0;
+      max-width: 100%;
+    }
 
     .btn-icon.gcal {
       background: #eef3ff;
@@ -625,6 +927,15 @@
 
     .btn-icon.gcal:hover { background: #dfe9ff; }
 
+    .btn-icon.edit {
+      background: #f3efe6;
+      color: #7f6730;
+      border: 1px solid #dbcda9;
+      font-weight: 600;
+    }
+
+    .btn-icon.edit:hover { background: #ece2c7; }
+
     .btn-icon.delete {
       background: var(--danger-pale);
       color: var(--danger);
@@ -632,6 +943,84 @@
     }
 
     .btn-icon.delete:hover { background: #fce4de; }
+
+    .btn-icon.status {
+      background: #f4f1eb;
+      color: var(--navy);
+      border-color: #d8cfc0;
+      min-width: 92px;
+    }
+
+    .action-dropdown {
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .action-dropdown > summary {
+      list-style: none;
+    }
+
+    .action-dropdown > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .action-dropdown[open] > summary {
+      box-shadow: 0 0 0 3px rgba(26, 58, 92, 0.08);
+    }
+
+    .action-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 180px;
+      background: #fff;
+      border: 1px solid #e8dfcf;
+      border-radius: 12px;
+      box-shadow: 0 18px 40px rgba(16, 24, 40, 0.16);
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 80;
+    }
+
+    .action-dropdown-item {
+      width: 100%;
+      min-height: 36px;
+      padding: 8px 10px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s;
+    }
+
+    .action-dropdown-item:hover {
+      background: #f8f5ef;
+      border-color: #e9dfcd;
+    }
+
+    .action-dropdown-item.active {
+      background: #f5f9ff;
+      color: #1a4fb8;
+      border-color: #c8d9ff;
+    }
+
+    .action-dropdown-item.danger {
+      color: var(--danger);
+    }
+
+    .action-dropdown-item.danger:hover {
+      background: #fff4f1;
+      border-color: #f1c9c1;
+    }
 
     .view-tabs {
       display: flex;
@@ -711,6 +1100,12 @@
       background: #f9fffa !important;
     }
 
+    .nao-cumprido-card {
+      border-left: 4px solid var(--danger) !important;
+      background: #fff8f7 !important;
+      opacity: 1 !important;
+    }
+
     .badge-cumprido {
       background: #e6f4ec;
       color: #27ae60;
@@ -724,6 +1119,14 @@
       font-weight: 600;
     }
     .btn-icon.concluir:hover { background: #c8ecd4; }
+
+    .btn-icon.nao-cumprido {
+      background: #fde9e6;
+      color: #c95f4a;
+      border: 1px solid #efb9b0;
+      font-weight: 600;
+    }
+    .btn-icon.nao-cumprido:hover { background: #f9d7d1; }
 
     .btn-icon.whats {
       background: #e7fbe9;
@@ -779,6 +1182,135 @@
     }
 
     .toast.show { opacity: 1; transform: translateY(0); }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(16, 24, 40, 0.44);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 500;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(100%, 520px);
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 28px 70px rgba(14, 23, 42, 0.22);
+      border: 1px solid rgba(212, 197, 160, 0.45);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 18px 20px 12px;
+      border-bottom: 1px solid #efe7d6;
+      background: linear-gradient(180deg, #fffaf2 0%, #ffffff 100%);
+    }
+
+    .modal-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+
+    .modal-title {
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.15;
+      margin: 0;
+    }
+
+    .modal-body {
+      padding: 18px 20px 20px;
+    }
+
+    .modal-copy {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .modal-textarea {
+      width: 100%;
+      min-height: 112px;
+      resize: vertical;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1.5px solid #dbcda9;
+      font: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background: #fffdfa;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+
+    .modal-textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(196, 147, 42, 0.12);
+      background: #fff;
+    }
+
+    .modal-error {
+      min-height: 18px;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--danger);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .modal-btn {
+      min-width: 132px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .modal-btn.secondary {
+      background: #f4efe3;
+      border-color: #e5d7b7;
+      color: #7f6730;
+    }
+
+    .modal-btn.secondary:hover {
+      background: #efe3c8;
+    }
+
+    .modal-btn.primary {
+      background: #cf654f;
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(201, 95, 74, 0.22);
+    }
+
+    .modal-btn.primary:hover {
+      background: #bb5843;
+    }
 
     @media (max-width: 900px) {
       header {
@@ -859,6 +1391,15 @@
         gap: 10px;
       }
 
+      .section-tools {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-wrap {
+        min-width: 0;
+      }
+
       .prazo-top {
         flex-direction: column;
         gap: 8px;
@@ -875,8 +1416,29 @@
         gap: 10px;
       }
 
+      .prazo-footer-left,
+      .prazo-footer-right {
+        width: 100%;
+      }
+
+      .prazo-footer-right {
+        justify-content: flex-start;
+      }
+
       .prazo-actions {
         flex-wrap: wrap;
+      }
+
+      .modal-card {
+        width: 100%;
+      }
+
+      .modal-actions {
+        flex-direction: column-reverse;
+      }
+
+      .modal-btn {
+        width: 100%;
       }
     }
 
@@ -1141,7 +1703,7 @@
 
 <div class="layout">
   <aside class="sidebar">
-    <div class="sidebar-title">Cadastrar Prazo</div>
+    <div class="sidebar-title" id="sidebar-form-title">Cadastrar Prazo</div>
 
     <div class="form-block-label">📁 Dados do processo</div>
 
@@ -1168,10 +1730,10 @@
     </div>
 
     <div class="field">
-      <label>Advogado responsável</label>
-      <select id="f-advogado">
-        <option value="">Selecione o responsável</option>
-      </select>
+      <label>Advogados responsáveis</label>
+      <div id="f-advogado-picker" class="responsaveis-picker"></div>
+      <select id="f-advogado" class="hidden-multi" multiple></select>
+      <div class="hint">Clique nos nomes para selecionar. O primeiro marcado será o responsável principal.</div>
     </div>
 
     <div class="field">
@@ -1196,9 +1758,9 @@
     </div>
 
     <div class="field">
-      <label>Data final (opcional)</label>
-      <input type="date" id="f-fim-manual">
-      <div class="hint">Se informar, ignora o prazo em dias</div>
+      <label>Data final (calculada)</label>
+      <input type="date" id="f-fim-manual" readonly>
+      <div class="hint">Preenchida automaticamente com base no início e nos dias úteis</div>
     </div>
 
     <button class="btn-calc" onclick="calcularPreview()">⟳ Calcular data final</button>
@@ -1249,7 +1811,8 @@
 
     <div class="divider"></div>
 
-    <button class="btn-primary" onclick="salvarPrazo()">+ Adicionar ao painel</button>
+    <button class="btn-primary" id="btn-salvar-prazo" onclick="salvarPrazo()">+ Adicionar ao painel</button>
+    <button class="btn-secondary" id="btn-cancelar-edicao" onclick="cancelarEdicaoPrazo()" style="display:none">Cancelar edição</button>
     <button class="btn-secondary" id="btn-email-geral" onclick="enviarEmailGeral()">↗ Enviar resumo por e-mail</button>
   </aside>
 
@@ -1281,13 +1844,25 @@
       <div class="view-tabs">
         <button class="view-tab active" id="vtab-ativos" onclick="trocarView('ativos')">Prazos Ativos</button>
         <button class="view-tab" id="vtab-cumpridos" onclick="trocarView('cumpridos')">✔ Cumpridos <span id="badge-cumpridos" class="cumpridos-count">0</span></button>
+        <button class="view-tab" id="vtab-nao-cumpridos" onclick="trocarView('nao-cumpridos')">Não cumpridos <span id="badge-nao-cumpridos" class="cumpridos-count">0</span></button>
       </div>
 
-      <div class="filter-tabs" id="filter-tabs-ativos">
-        <button class="filter-tab active" onclick="filtrar('todos', this)">Todos</button>
-        <button class="filter-tab" onclick="filtrar('urgentes', this)">Urgentes</button>
-        <button class="filter-tab" onclick="filtrar('ok', this)">Em dia</button>
-        <button class="filter-tab" onclick="filtrar('vencidos', this)">Vencidos</button>
+      <div class="section-tools">
+        <div class="filter-tabs" id="filter-tabs-ativos">
+          <button class="filter-tab active" onclick="filtrar('todos', this)">Todos</button>
+          <button class="filter-tab" onclick="filtrar('urgentes', this)">Urgentes</button>
+          <button class="filter-tab" onclick="filtrar('ok', this)">Em dia</button>
+        </div>
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input
+            type="search"
+            id="painel-search"
+            class="search-input"
+            placeholder="Buscar por processo, partes, tribunal, descrição ou responsável"
+            oninput="atualizarBuscaPainel(this.value)">
+          <button type="button" id="painel-search-clear" class="search-clear" onclick="limparBuscaPainel()">×</button>
+        </div>
       </div>
     </div>
 
@@ -1302,6 +1877,23 @@
 </div>
 
 <div class="toast" id="toast"></div>
+<div class="modal-overlay" id="motivo-modal" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="motivo-modal-title">
+    <div class="modal-header">
+      <div class="modal-kicker">Prazo • Não cumprido</div>
+      <h3 class="modal-title" id="motivo-modal-title">Informe o motivo</h3>
+    </div>
+    <div class="modal-body">
+      <div class="modal-copy">Explique rapidamente por que esse prazo não foi cumprido. Essa observação ficará visível apenas na aba <strong>Não cumpridos</strong>.</div>
+      <textarea id="motivo-modal-input" class="modal-textarea" placeholder="Ex.: Publicação identificada fora do tempo, ausência de documentação do cliente, indisponibilidade do sistema..."></textarea>
+      <div class="modal-error" id="motivo-modal-error"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-btn secondary" onclick="fecharModalMotivo(false)">Cancelar</button>
+        <button type="button" class="modal-btn primary" onclick="confirmarModalMotivo()">Salvar motivo</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -1314,14 +1906,27 @@
   let SESSION = null;
   let PROFILES_MAP = {};
   let prazos = [];
+  let prazosNaoCumpridos = [];
   let prazosCumpridos = [];
   let filtroAtivo = 'todos';
   let viewAtiva = 'ativos';
+  let buscaPainel = '';
   let realtimeChannel = null;
+  let responsavelSelectionOrder = [];
+  let editingPrazoId = null;
+  let editingPrazoStatusMeta = '';
+  let editingPrazoMotivoMeta = '';
+  let motivoModalResolver = null;
 
   const DIAS = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
   const MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
   const EMAILS = 'liandro@faroadvocacia.adv.br,camille@faroadvocacia.adv.br,thassila@faroadvocacia.adv.br';
+  const RESPONSAVEIS_META_PREFIX = '[[RESP_IDS:';
+  const RESPONSAVEIS_META_SUFFIX = ']]';
+  const PRAZO_STATUS_META_PREFIX = '[[PRAZO_STATUS:';
+  const PRAZO_STATUS_META_SUFFIX = ']]';
+  const PRAZO_MOTIVO_META_PREFIX = '[[PRAZO_MOTIVO:';
+  const PRAZO_MOTIVO_META_SUFFIX = ']]';
 
   const whatsMap = {
     'Liandro Faro': '5591991585576',
@@ -1480,17 +2085,47 @@
     (data || []).forEach(p => PROFILES_MAP[p.id] = p.nome);
 
     const selResp = document.getElementById("f-advogado");
-    selResp.innerHTML = `<option value="">Selecione o responsável</option>`;
+    const picker = document.getElementById("f-advogado-picker");
+    selResp.innerHTML = '';
+    picker.innerHTML = '';
+    responsavelSelectionOrder = [];
 
     (data || []).forEach(u => {
       selResp.insertAdjacentHTML("beforeend", `<option value="${u.id}">${escHtml(u.nome)}</option>`);
+      const adv = getAdvStyle(u.nome);
+      picker.insertAdjacentHTML("beforeend", `
+        <button type="button" class="responsavel-option" data-id="${u.id}" onclick="toggleResponsavel('${u.id}')">
+          <span class="responsavel-main">
+            <span class="responsavel-avatar" style="background:${adv.color}">${adv.initials}</span>
+            <span class="responsavel-text">
+              <strong>${escHtml(u.nome)}</strong>
+              <span>Toque para marcar</span>
+            </span>
+          </span>
+          <span class="responsavel-side">
+            <span class="responsavel-primary-badge">Principal</span>
+            <span class="responsavel-check" aria-hidden="true"></span>
+          </span>
+        </button>
+      `);
     });
+
+    updateResponsaveisPickerState();
   }
 
   function getFeriados(ano) {
     const fixos = [
-      `${ano}-01-01`,`${ano}-04-21`,`${ano}-05-01`,`${ano}-09-07`,
-      `${ano}-10-12`,`${ano}-11-02`,`${ano}-11-15`,`${ano}-11-20`,`${ano}-12-25`
+      `${ano}-01-01`,
+      `${ano}-04-21`,
+      `${ano}-05-01`,
+      `${ano}-09-07`,
+      `${ano}-10-12`,
+      `${ano}-10-28`,
+      `${ano}-11-02`,
+      `${ano}-11-15`,
+      `${ano}-11-20`,
+      `${ano}-12-08`,
+      `${ano}-12-25`
     ];
 
     function pascoa(y) {
@@ -1513,15 +2148,23 @@
       ...fixos,
       fmt(ad(p,-48)),
       fmt(ad(p,-47)),
+      fmt(ad(p,-46)),
+      fmt(ad(p,-3)),
       fmt(ad(p,-2)),
-      fmt(p),
-      fmt(ad(p,60))
+      fmt(ad(p,60)),
     ]);
+  }
+
+  function emRecessoJudiciario(date) {
+    const mes = date.getMonth() + 1;
+    const dia = date.getDate();
+    return (mes === 12 && dia >= 20) || (mes === 1 && dia <= 6);
   }
 
   function ehDiaUtil(date) {
     const d = date.getDay();
     if (d === 0 || d === 6) return false;
+    if (emRecessoJudiciario(date)) return false;
     return !getFeriados(date.getFullYear()).has(date.toISOString().split('T')[0]);
   }
 
@@ -1544,7 +2187,7 @@
   }
 
   function fmtDate(d) {
-    return `${String(d.getDate()).padStart(2,'0')}/${MESES[d.getMonth()]}/${d.getFullYear()}`;
+    return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth() + 1).padStart(2,'0')}/${d.getFullYear()}`;
   }
 
   function difsUteis(d1, d2) {
@@ -1560,6 +2203,42 @@
     return Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
   }
 
+  function calcularFimFormulario() {
+    const inicioVal = document.getElementById('f-inicio').value;
+    const prazoVal = parseInt(document.getElementById('f-prazo').value);
+
+    if (!inicioVal || !prazoVal) return null;
+    return addDiasUteis(new Date(inicioVal + 'T12:00:00'), prazoVal);
+  }
+
+  function atualizarVencimentoAutomatico() {
+    const fim = calcularFimFormulario();
+    const fimInput = document.getElementById('f-fim-manual');
+    const calcResult = document.getElementById('calc-result');
+    const alertsPreview = document.getElementById('alerts-preview');
+
+    if (!fim) {
+      fimInput.value = '';
+      calcResult.style.display = 'none';
+      alertsPreview.style.display = 'none';
+      return false;
+    }
+
+    fimInput.value = fim.toISOString().split('T')[0];
+
+    const a2d = subtractDiasUteis(fim, 2);
+    const a24 = subtractDiasUteis(fim, 1);
+
+    document.getElementById('cr-date').textContent = fmtDate(fim);
+    document.getElementById('cr-day').textContent = DIAS[fim.getDay()];
+    document.getElementById('alerta2d-prev').textContent = fmtDate(a2d) + ' · ' + DIAS[a2d.getDay()];
+    document.getElementById('alerta24h-prev').textContent = fmtDate(a24) + ' · ' + DIAS[a24.getDay()];
+
+    calcResult.style.display = 'block';
+    alertsPreview.style.display = 'block';
+    return true;
+  }
+
   function escHtml(s) {
     return String(s || '')
       .replace(/&/g,'&amp;')
@@ -1568,16 +2247,350 @@
       .replace(/"/g,'&quot;');
   }
 
+  function getSelectedResponsaveis() {
+    const options = Array.from(document.getElementById('f-advogado').options);
+    const selectedIds = options.filter((option) => option.selected).map((option) => option.value);
+
+    responsavelSelectionOrder = responsavelSelectionOrder.filter((id) => selectedIds.includes(id));
+    selectedIds.forEach((id) => {
+      if (!responsavelSelectionOrder.includes(id)) responsavelSelectionOrder.push(id);
+    });
+
+    return responsavelSelectionOrder
+      .map((id) => {
+        const option = options.find((item) => item.value === id);
+        return option ? { id: option.value, nome: option.textContent.trim() } : null;
+      })
+      .filter(Boolean);
+  }
+
+  function updateResponsaveisPickerState() {
+    const selecionados = getSelectedResponsaveis().map((item) => item.id);
+    document.querySelectorAll('.responsavel-option').forEach((button) => {
+      const selected = selecionados.includes(button.dataset.id);
+      const isPrimary = selected && selecionados[0] === button.dataset.id;
+      button.classList.toggle('selected', selected);
+      button.classList.toggle('primary', isPrimary);
+      const subtitle = button.querySelector('.responsavel-text span');
+      if (subtitle) {
+        subtitle.textContent = isPrimary ? 'Responsável principal' : selected ? 'Responsável selecionado' : 'Toque para marcar';
+      }
+    });
+  }
+
+  function toggleResponsavel(id) {
+    const option = Array.from(document.getElementById('f-advogado').options).find((item) => item.value === id);
+    if (!option) return;
+
+    if (option.selected) {
+      option.selected = false;
+      responsavelSelectionOrder = responsavelSelectionOrder.filter((item) => item !== id);
+    } else {
+      option.selected = true;
+      responsavelSelectionOrder = responsavelSelectionOrder.filter((item) => item !== id);
+      responsavelSelectionOrder.push(id);
+    }
+
+    updateResponsaveisPickerState();
+  }
+
+  function appendResponsaveisMeta(desc, ids) {
+    const limpa = stripResponsaveisMeta(desc).trim();
+    if (!ids || ids.length <= 1) return limpa;
+    return `${limpa}\n${RESPONSAVEIS_META_PREFIX}${ids.join(',')}${RESPONSAVEIS_META_SUFFIX}`;
+  }
+
+  function stripResponsaveisMeta(desc) {
+    return String(desc || '')
+      .replace(/\n?\[\[RESP_IDS:[^\]]+\]\]/g,'')
+      .trim();
+  }
+
+  function extractResponsaveisIds(desc) {
+    const match = String(desc || '').match(/\[\[RESP_IDS:([^\]]+)\]\]/);
+    if (!match) return [];
+    return match[1].split(',').map((item) => item.trim()).filter(Boolean);
+  }
+
+  function stripPrazoStatusMeta(desc) {
+    return String(desc || '')
+      .replace(/\n?\[\[PRAZO_STATUS:[^\]]+\]\]/g,'')
+      .trim();
+  }
+
+  function extractPrazoStatusMeta(desc) {
+    const match = String(desc || '').match(/\[\[PRAZO_STATUS:([^\]]+)\]\]/);
+    return match ? match[1].trim() : '';
+  }
+
+  function appendPrazoStatusMeta(desc, status) {
+    const limpa = stripPrazoStatusMeta(desc).trim();
+    if (!status) return limpa;
+    return `${limpa}\n${PRAZO_STATUS_META_PREFIX}${status}${PRAZO_STATUS_META_SUFFIX}`;
+  }
+
+  function stripPrazoMotivoMeta(desc) {
+    return String(desc || '')
+      .replace(/\n?\[\[PRAZO_MOTIVO:[^\]]+\]\]/g,'')
+      .trim();
+  }
+
+  function extractPrazoMotivoMeta(desc) {
+    const match = String(desc || '').match(/\[\[PRAZO_MOTIVO:([^\]]+)\]\]/);
+    return match ? decodeURIComponent(match[1].trim()) : '';
+  }
+
+  function appendPrazoMotivoMeta(desc, motivo) {
+    const limpa = stripPrazoMotivoMeta(desc).trim();
+    if (!motivo) return limpa;
+    return `${limpa}\n${PRAZO_MOTIVO_META_PREFIX}${encodeURIComponent(motivo)}${PRAZO_MOTIVO_META_SUFFIX}`;
+  }
+
+  function stripAllPrazoMeta(desc) {
+    return stripPrazoMotivoMeta(stripPrazoStatusMeta(stripResponsaveisMeta(desc)));
+  }
+
+  function buildResponsaveisFromPrazo(row) {
+    const responsaveis = [];
+    if (row.advogado_id) {
+      responsaveis.push({
+        id: row.advogado_id,
+        nome: row.profiles?.nome || PROFILES_MAP[row.advogado_id] || '—'
+      });
+    }
+
+    extractResponsaveisIds(row.descricao).forEach((id) => {
+      if (!responsaveis.some((item) => item.id === id)) {
+        responsaveis.push({
+          id,
+          nome: PROFILES_MAP[id] || '—'
+        });
+      }
+    });
+
+    return responsaveis.filter((item) => item.nome !== '—');
+  }
+
+  function formatResponsaveisLabel(responsaveis) {
+    if (!responsaveis || responsaveis.length === 0) return '—';
+    return responsaveis.map((item) => item.nome).join(', ');
+  }
+
+  function renderResponsaveisHtml(responsaveis) {
+    if (!responsaveis || responsaveis.length === 0) return '';
+    return `<div class="responsaveis-list">
+      ${responsaveis.map((resp) => {
+        const adv = getAdvStyle(resp.nome);
+        return `<div class="btn-icon responsavel">
+          <span class="adv-avatar" style="background:${adv.color}">${adv.initials}</span>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  function closeDropdownFromElement(element) {
+    const dropdown = element?.closest('details');
+    if (dropdown) dropdown.removeAttribute('open');
+  }
+
+  function runDropdownAction(element, callbackName, id) {
+    closeDropdownFromElement(element);
+    if (typeof window[callbackName] === 'function') {
+      window[callbackName](id);
+    }
+  }
+
+  function renderStatusDropdown(prazo, state) {
+    const isCumprido = state === 'cumprido';
+    const isNaoCumprido = state === 'nao_cumprido';
+
+    return `
+      <details class="action-dropdown">
+        <summary class="btn-icon status">Status ▾</summary>
+        <div class="action-dropdown-menu">
+          <button class="action-dropdown-item ${isCumprido ? 'active' : ''}" type="button" onclick="runDropdownAction(this, 'concluirPrazo', ${prazo.id})">
+            🟢 Concluído
+          </button>
+          <button class="action-dropdown-item ${isNaoCumprido ? 'active' : ''}" type="button" onclick="runDropdownAction(this, 'marcarNaoCumprido', ${prazo.id})">
+            🔴 Não cumprido
+          </button>
+        </div>
+      </details>
+    `;
+  }
+
+  function normalizarBusca(valor) {
+    return String(valor || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
+  }
+
+  function prazoCombinaBusca(prazo) {
+    const termo = normalizarBusca(buscaPainel);
+    if (!termo) return true;
+
+    const haystack = normalizarBusca([
+      prazo.processo,
+      prazo.tribunal,
+      prazo.autor,
+      prazo.reu,
+      prazo.desc,
+      prazo.responsaveisLabel,
+      prazo.motivoNaoCumprido
+    ].filter(Boolean).join(' '));
+
+    return haystack.includes(termo);
+  }
+
+  function atualizarBuscaPainel(valor) {
+    buscaPainel = valor || '';
+    const clear = document.getElementById('painel-search-clear');
+    if (clear) clear.classList.toggle('show', !!buscaPainel.trim());
+
+    if (viewAtiva === 'ativos') renderPrazos();
+    else if (viewAtiva === 'cumpridos') renderCumpridos();
+    else renderNaoCumpridos();
+  }
+
+  function limparBuscaPainel() {
+    const input = document.getElementById('painel-search');
+    if (input) input.value = '';
+    atualizarBuscaPainel('');
+    input?.focus();
+  }
+
+  function abrirModalMotivo(valorInicial = '') {
+    const overlay = document.getElementById('motivo-modal');
+    const input = document.getElementById('motivo-modal-input');
+    const error = document.getElementById('motivo-modal-error');
+    if (!overlay || !input || !error) return Promise.resolve(null);
+
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden', 'false');
+    input.value = valorInicial;
+    error.textContent = '';
+
+    requestAnimationFrame(() => {
+      input.focus();
+      input.setSelectionRange(input.value.length, input.value.length);
+    });
+
+    return new Promise((resolve) => {
+      motivoModalResolver = resolve;
+    });
+  }
+
+  function fecharModalMotivo(confirmado) {
+    const overlay = document.getElementById('motivo-modal');
+    const input = document.getElementById('motivo-modal-input');
+    const error = document.getElementById('motivo-modal-error');
+    if (!overlay || !input || !error || !motivoModalResolver) return;
+
+    const valor = input.value.trim();
+    if (confirmado && !valor) {
+      error.textContent = 'Informe o motivo do não cumprimento.';
+      input.focus();
+      return;
+    }
+
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden', 'true');
+    error.textContent = '';
+
+    const resolver = motivoModalResolver;
+    motivoModalResolver = null;
+    resolver(confirmado ? valor : null);
+  }
+
+  function confirmarModalMotivo() {
+    fecharModalMotivo(true);
+  }
+
+  function atualizarModoFormulario() {
+    const title = document.getElementById('sidebar-form-title');
+    const btnSalvar = document.getElementById('btn-salvar-prazo');
+    const btnCancelar = document.getElementById('btn-cancelar-edicao');
+
+    if (!title || !btnSalvar || !btnCancelar) return;
+
+    const editando = editingPrazoId !== null;
+    title.textContent = editando ? 'Editar Prazo' : 'Cadastrar Prazo';
+    btnSalvar.textContent = editando ? 'Salvar alterações' : '+ Adicionar ao painel';
+    btnCancelar.style.display = editando ? 'block' : 'none';
+  }
+
+  function preencherFormularioPrazo(id) {
+    const prazo = [...prazos, ...prazosNaoCumpridos, ...prazosCumpridos].find((item) => item.id === id);
+    if (!prazo) {
+      showToast('Prazo não encontrado');
+      return;
+    }
+
+    editingPrazoId = id;
+    editingPrazoStatusMeta = prazo.statusMeta || '';
+    editingPrazoMotivoMeta = prazo.motivoNaoCumprido || '';
+
+    document.getElementById('f-processo').value = prazo.processo || '';
+    document.getElementById('f-tribunal').value = prazo.tribunal || '';
+    document.getElementById('f-autor').value = prazo.autor || '';
+    document.getElementById('f-reu').value = prazo.reu || '';
+    document.getElementById('f-desc').value = prazo.desc || '';
+    document.getElementById('f-inicio').value = prazo.inicio || '';
+
+    const dias = Number(prazo.dias);
+    document.getElementById('f-prazo').value = Number.isFinite(dias) ? String(dias) : '';
+    document.getElementById('f-fim-manual').value = prazo.fim || '';
+
+    Array.from(document.getElementById('f-advogado').options).forEach((option) => {
+      option.selected = false;
+    });
+
+    responsavelSelectionOrder = [];
+    (prazo.responsaveis || []).forEach((resp) => {
+      const option = Array.from(document.getElementById('f-advogado').options).find((item) => item.value === resp.id);
+      if (!option) return;
+      option.selected = true;
+      responsavelSelectionOrder.push(resp.id);
+    });
+
+    updateResponsaveisPickerState();
+    atualizarModoFormulario();
+
+    if (prazo.inicio && Number.isFinite(dias)) {
+      atualizarVencimentoAutomatico();
+    } else {
+      document.getElementById('calc-result').style.display = 'none';
+      document.getElementById('alerts-preview').style.display = 'none';
+    }
+
+    document.querySelector('.sidebar')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('f-processo').focus();
+  }
+
+  function cancelarEdicaoPrazo() {
+    limparForm();
+    showToast('Edição cancelada');
+  }
+
   function getAdvStyle(nome) {
+    const parts = String(nome || '').trim().split(/\s+/).filter(Boolean);
+    const fallbackInitials = parts.length >= 2
+      ? `${parts[0][0]}${parts[parts.length - 1][0]}`
+      : String(nome || '?').substring(0,2);
     const advMap = {
       'Liandro Faro': { initials: 'LF', color: '#1a3a5c' },
       'Camille Carvalho': { initials: 'CC', color: '#8b6914' },
       'Thássila Smith': { initials: 'TS', color: '#2d6a4f' },
     };
-    return advMap[nome] || { initials: (nome || '?').substring(0,2).toUpperCase(), color: '#999' };
+    return advMap[nome] || { initials: fallbackInitials.toUpperCase(), color: '#35527d' };
   }
 
   function mapPrazoBanco(row) {
+    const responsaveis = buildResponsaveisFromPrazo(row);
+    const statusMeta = extractPrazoStatusMeta(row.descricao);
+    const motivoNaoCumprido = extractPrazoMotivoMeta(row.descricao);
     return {
       id: row.id,
       processo: row.processo,
@@ -1586,7 +2599,11 @@
       reu: row.reu,
       advogadoId: row.advogado_id || '',
       advogado: row.profiles?.nome || PROFILES_MAP[row.advogado_id] || '—',
-      desc: row.descricao,
+      responsaveis,
+      responsaveisLabel: formatResponsaveisLabel(responsaveis),
+      desc: stripAllPrazoMeta(row.descricao),
+      statusMeta,
+      motivoNaoCumprido,
       inicio: row.inicio,
       fim: row.fim,
       dias: row.dias ?? '—',
@@ -1624,14 +2641,25 @@
     }
 
     const todos = (data || []).map(mapPrazoBanco);
-    prazos = todos.filter(p => p.statusBanco === 'ativo');
+    const ativos = todos.filter(p => p.statusBanco === 'ativo');
+    const naoCumpridosMarcados = ativos.filter(p => p.statusMeta === 'nao_cumprido');
+    const naoCumpridosAutomaticos = ativos.filter(p => getStatus(p) === 'expired');
+    prazosNaoCumpridos = [...naoCumpridosMarcados];
+    naoCumpridosAutomaticos.forEach((prazo) => {
+      if (!prazosNaoCumpridos.some((item) => item.id === prazo.id)) {
+        prazosNaoCumpridos.push(prazo);
+      }
+    });
+    prazos = ativos.filter(p => !prazosNaoCumpridos.some((item) => item.id === p.id));
     prazosCumpridos = todos.filter(p => p.statusBanco === 'cumprido');
 
     if (viewAtiva === 'ativos') renderPrazos();
+    else if (viewAtiva === 'nao-cumpridos') renderNaoCumpridos();
     else renderCumpridos();
 
     atualizarStats();
     atualizarBadgeCumpridos();
+    atualizarBadgeNaoCumpridos();
 
     document.getElementById('btn-email-geral').style.display = prazos.length > 0 ? 'block' : 'none';
   }
@@ -1641,45 +2669,63 @@
     const tribunal = document.getElementById('f-tribunal').value.trim();
     const autor = document.getElementById('f-autor').value.trim();
     const reu = document.getElementById('f-reu').value.trim();
-    const advogado_id = document.getElementById('f-advogado').value;
-    const descricao = document.getElementById('f-desc').value.trim();
+    const responsaveisSelecionados = getSelectedResponsaveis();
+    const advogado_id = responsaveisSelecionados[0]?.id || '';
+    const descricaoBase = document.getElementById('f-desc').value.trim();
+    const descricaoComResponsaveis = appendResponsaveisMeta(descricaoBase, responsaveisSelecionados.map((item) => item.id));
+    const descricao = appendPrazoMotivoMeta(
+      appendPrazoStatusMeta(descricaoComResponsaveis, editingPrazoStatusMeta),
+      editingPrazoMotivoMeta
+    );
     const inicio = document.getElementById('f-inicio').value;
-    const fim = document.getElementById('f-fim-manual').value;
     const dias = parseInt(document.getElementById('f-prazo').value) || null;
+    const fimDate = calcularFimFormulario();
+    const fim = fimDate ? fimDate.toISOString().split('T')[0] : '';
 
     if (!SESSION?.user) { showToast('Faça login primeiro'); return; }
     if (!processo) { showToast('Informe o número do processo'); return; }
     if (!autor) { showToast('Informe o Autor'); return; }
     if (!reu) { showToast('Informe o Réu'); return; }
-    if (!advogado_id) { showToast('Selecione o advogado responsável'); return; }
-    if (!descricao) { showToast('Informe a descrição do prazo'); return; }
+    if (!advogado_id) { showToast('Selecione ao menos um advogado responsável'); return; }
+    if (!descricaoBase) { showToast('Informe a descrição do prazo'); return; }
     if (!inicio) { showToast('Informe a data de início'); return; }
-    if (!fim) { showToast('Informe ou calcule a data final'); return; }
+    if (!dias) { showToast('Informe o prazo em dias úteis'); return; }
+    if (!fim) { showToast('Não foi possível calcular a data final'); return; }
 
-    const { error } = await sb
-      .from('prazos')
-      .insert({
-        processo,
-        tribunal,
-        autor,
-        reu,
-        advogado_id,
-        descricao,
-        inicio,
-        fim,
-        dias,
-        status: 'ativo',
-        criado_por: SESSION.user.id
-      });
+    document.getElementById('f-fim-manual').value = fim;
+
+    const payload = {
+      processo,
+      tribunal,
+      autor,
+      reu,
+      advogado_id,
+      descricao,
+      inicio,
+      fim,
+      dias
+    };
+
+    const query = editingPrazoId !== null
+      ? sb.from('prazos').update(payload).eq('id', editingPrazoId)
+      : sb.from('prazos').insert({
+          ...payload,
+          status: 'ativo',
+          criado_por: SESSION.user.id
+        });
+
+    const { error } = await query;
 
     if (error) {
       console.error(error);
-      showToast('Erro ao salvar prazo');
+      showToast(editingPrazoId !== null ? 'Erro ao atualizar prazo' : 'Erro ao salvar prazo');
       return;
     }
 
+    const editando = editingPrazoId !== null;
     limparForm();
-    showToast('Prazo cadastrado com sucesso!');
+    await carregarPrazos();
+    showToast(editando ? 'Prazo atualizado com sucesso!' : 'Prazo cadastrado com sucesso!');
   }
 
   async function deletarPrazo(id) {
@@ -1696,10 +2742,22 @@
   }
 
   async function concluirPrazo(id) {
+    const prazo = [...prazos, ...prazosNaoCumpridos, ...prazosCumpridos].find((item) => item.id === id);
+    if (!prazo) {
+      showToast('Prazo não encontrado');
+      return;
+    }
+
+    const descricao = appendResponsaveisMeta(
+      stripPrazoMotivoMeta(stripPrazoStatusMeta(prazo.desc)),
+      (prazo.responsaveis || []).map((item) => item.id)
+    );
+
     const { error } = await sb
       .from('prazos')
       .update({
         status: 'cumprido',
+        descricao,
         concluido_em: new Date().toISOString()
       })
       .eq('id', id);
@@ -1713,11 +2771,65 @@
     showToast('✔ Prazo marcado como cumprido!');
   }
 
+  async function marcarNaoCumprido(id) {
+    const prazo = [...prazos, ...prazosNaoCumpridos].find((item) => item.id === id);
+    if (!prazo) {
+      showToast('Prazo não encontrado');
+      return;
+    }
+
+    const motivoInicial = prazo.motivoNaoCumprido || '';
+    const motivo = await abrirModalMotivo(motivoInicial);
+    if (motivo === null) return;
+    const motivoLimpo = motivo.trim();
+    if (!motivoLimpo) {
+      showToast('Informe o motivo do não cumprimento');
+      return;
+    }
+
+    const descricaoBase = appendResponsaveisMeta(
+      stripPrazoMotivoMeta(stripPrazoStatusMeta(prazo.desc)),
+      (prazo.responsaveis || []).map((item) => item.id)
+    );
+    const descricao = appendPrazoMotivoMeta(
+      appendPrazoStatusMeta(descricaoBase, 'nao_cumprido'),
+      motivoLimpo
+    );
+
+    const { error } = await sb
+      .from('prazos')
+      .update({
+        descricao,
+        concluido_em: null
+      })
+      .eq('id', id);
+
+    if (error) {
+      console.error(error);
+      showToast('Erro ao marcar prazo como não cumprido');
+      return;
+    }
+
+    showToast('Prazo marcado como não cumprido');
+  }
+
   async function reabrirPrazo(id) {
+    const prazo = [...prazos, ...prazosNaoCumpridos, ...prazosCumpridos].find((item) => item.id === id);
+    if (!prazo) {
+      showToast('Prazo não encontrado');
+      return;
+    }
+
+    const descricao = appendResponsaveisMeta(
+      stripPrazoMotivoMeta(stripPrazoStatusMeta(prazo.desc)),
+      (prazo.responsaveis || []).map((item) => item.id)
+    );
+
     const { error } = await sb
       .from('prazos')
       .update({
         status: 'ativo',
+        descricao,
         concluido_em: null
       })
       .eq('id', id);
@@ -1788,26 +2900,11 @@
   function calcularPreview() {
     const inicioVal = document.getElementById('f-inicio').value;
     const prazoVal = parseInt(document.getElementById('f-prazo').value);
-    const fimManual = document.getElementById('f-fim-manual').value;
 
     if (!inicioVal) { showToast('Informe a data de início'); return; }
-    if (!prazoVal && !fimManual) { showToast('Informe o prazo ou a data final'); return; }
+    if (!prazoVal) { showToast('Informe o prazo em dias úteis'); return; }
 
-    const inicio = new Date(inicioVal + 'T12:00:00');
-    let fim = fimManual ? new Date(fimManual + 'T12:00:00') : addDiasUteis(inicio, prazoVal);
-
-    document.getElementById('f-fim-manual').value = fim.toISOString().split('T')[0];
-
-    const a2d = subtractDiasUteis(fim, 2);
-    const a24 = subtractDiasUteis(fim, 1);
-
-    document.getElementById('cr-date').textContent = fmtDate(fim);
-    document.getElementById('cr-day').textContent = DIAS[fim.getDay()];
-    document.getElementById('alerta2d-prev').textContent = fmtDate(a2d) + ' · ' + DIAS[a2d.getDay()];
-    document.getElementById('alerta24h-prev').textContent = fmtDate(a24) + ' · ' + DIAS[a24.getDay()];
-
-    document.getElementById('calc-result').style.display = 'block';
-    document.getElementById('alerts-preview').style.display = 'block';
+    atualizarVencimentoAutomatico();
   }
 
   function renderPrazos() {
@@ -1822,11 +2919,13 @@
       filtrados = prazos.filter(p => getStatus(p) === 'expired');
     }
 
+    filtrados = filtrados.filter(prazoCombinaBusca);
+
     if (filtrados.length === 0) {
       list.innerHTML = `<div class="empty-state">
         <div class="empty-icon">⏳</div>
-        <p>${filtroAtivo==='todos'?'Nenhum prazo cadastrado':'Nenhum prazo nesta categoria'}</p>
-        <small>${filtroAtivo==='todos'?'Use o formulário ao lado para adicionar prazos':''}</small>
+        <p>${buscaPainel.trim() ? 'Nenhum prazo encontrado' : filtroAtivo==='todos'?'Nenhum prazo cadastrado':'Nenhum prazo nesta categoria'}</p>
+        <small>${buscaPainel.trim() ? 'Tente buscar por outro processo, parte, tribunal, descrição ou responsável' : filtroAtivo==='todos'?'Use o formulário ao lado para adicionar prazos':''}</small>
       </div>`;
       return;
     }
@@ -1850,12 +2949,8 @@
         expired: '<span class="status-badge badge-expired">Vencido</span>'
       };
 
-      const adv = getAdvStyle(p.advogado);
-      const advHtml = p.advogado ? `
-        <span class="adv-chip" style="background:${adv.color}20; color:${adv.color}; border:1px solid ${adv.color}40">
-          <span class="adv-avatar" style="background:${adv.color}">${adv.initials}</span>
-          ${escHtml(p.advogado)}
-        </span>` : '';
+      const advHtml = renderResponsaveisHtml(p.responsaveis);
+      const statusDropdown = renderStatusDropdown(p, 'ativo');
 
       return `
         <div class="prazo-card status-${st}">
@@ -1890,14 +2985,13 @@
           </div>
 
           <div class="prazo-footer">
-            <div></div>
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end">
-              ${advHtml}
+            <div class="prazo-footer-left">${advHtml}</div>
+            <div class="prazo-footer-right">
               <div class="prazo-actions">
+                <button class="btn-icon edit" onclick="preencherFormularioPrazo(${p.id})">✎ Editar</button>
                 <button class="btn-icon whats" onclick="enviarWhatsApp(${p.id})">📲 WhatsApp</button>
-                <button class="btn-icon concluir" onclick="concluirPrazo(${p.id})">✔ Concluído</button>
-                <button class="btn-icon email" onclick="enviarEmail(${p.id})">✉ E-mail</button>
-                <button class="btn-icon gcal" onclick="abrirGoogleCalendar(${p.id})">📅 Google Calendar</button>
+                ${statusDropdown}
+                <button class="btn-icon gcal" onclick="abrirGoogleCalendar(${p.id})">📅 Calendar</button>
                 <button class="btn-icon delete" onclick="deletarPrazo(${p.id})">✕ Remover</button>
               </div>
             </div>
@@ -1909,25 +3003,21 @@
 
   function renderCumpridos() {
     const list = document.getElementById('prazo-list');
+    const filtrados = prazosCumpridos.filter(prazoCombinaBusca);
 
-    if (prazosCumpridos.length === 0) {
+    if (filtrados.length === 0) {
       list.innerHTML = `<div class="empty-state">
         <div class="empty-icon">✅</div>
-        <p>Nenhum prazo cumprido ainda</p>
-        <small>Ao marcar um prazo como concluído, ele aparecerá aqui</small>
+        <p>${buscaPainel.trim() ? 'Nenhum prazo encontrado' : 'Nenhum prazo cumprido ainda'}</p>
+        <small>${buscaPainel.trim() ? 'Tente buscar por outro processo, parte, tribunal, descrição ou responsável' : 'Ao marcar um prazo como concluído, ele aparecerá aqui'}</small>
       </div>`;
       return;
     }
 
-    list.innerHTML = prazosCumpridos.map(p => {
+    list.innerHTML = filtrados.map(p => {
       const fim = new Date(p.fim+'T12:00:00');
       const conc = p.concluidoEm ? new Date(p.concluidoEm) : null;
-      const adv = getAdvStyle(p.advogado);
-      const advHtml = p.advogado ? `
-        <span class="adv-chip" style="background:${adv.color}20;color:${adv.color};border:1px solid ${adv.color}40">
-          <span class="adv-avatar" style="background:${adv.color}">${adv.initials}</span>
-          ${escHtml(p.advogado)}
-        </span>` : '';
+      const advHtml = renderResponsaveisHtml(p.responsaveis);
 
       return `
         <div class="prazo-card cumprido-card">
@@ -1948,17 +3038,92 @@
             </div>
             <div class="date-item">
               <div class="di-label">Concluído em</div>
-              <div class="di-value">${conc ? conc.toLocaleDateString('pt-BR') : '—'}</div>
+              <div class="di-value">${conc ? fmtDate(conc) : '—'}</div>
               <div class="di-day">${conc ? DIAS[conc.getDay()].substring(0,3) : ''}</div>
             </div>
           </div>
 
           <div class="prazo-footer">
-            <div>${advHtml}</div>
-            <div class="prazo-actions">
-              <button class="btn-icon gcal" onclick="abrirGoogleCalendar(${p.id})">📅 Google Calendar</button>
+            <div class="prazo-footer-left">${advHtml}</div>
+            <div class="prazo-footer-right">
+              <div class="prazo-actions">
+              <button class="btn-icon edit" onclick="preencherFormularioPrazo(${p.id})">✎ Editar</button>
+              <button class="btn-icon whats" onclick="enviarWhatsApp(${p.id})">📲 WhatsApp</button>
               <button class="btn-icon reabrir" onclick="reabrirPrazo(${p.id})">↩ Reabrir</button>
+              <button class="btn-icon gcal" onclick="abrirGoogleCalendar(${p.id})">📅 Calendar</button>
               <button class="btn-icon delete" onclick="deletarCumprido(${p.id})">✕ Excluir</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderNaoCumpridos() {
+    const list = document.getElementById('prazo-list');
+    const filtrados = prazosNaoCumpridos.filter(prazoCombinaBusca);
+
+    if (filtrados.length === 0) {
+      list.innerHTML = `<div class="empty-state">
+        <div class="empty-icon">⚠</div>
+        <p>${buscaPainel.trim() ? 'Nenhum prazo encontrado' : 'Nenhum prazo não cumprido'}</p>
+        <small>${buscaPainel.trim() ? 'Tente buscar por outro processo, parte, tribunal, descrição ou responsável' : 'Quando um prazo vencer sem conclusão, ele aparecerá aqui'}</small>
+      </div>`;
+      return;
+    }
+
+    const sorted = [...filtrados].sort((a, b) => new Date(a.fim) - new Date(b.fim));
+
+    list.innerHTML = sorted.map(p => {
+      const inicio = new Date(p.inicio + 'T12:00:00');
+      const fim = new Date(p.fim + 'T12:00:00');
+      const advHtml = renderResponsaveisHtml(p.responsaveis);
+      const motivoHtml = p.motivoNaoCumprido
+        ? `<div class="prazo-note">
+            <div class="prazo-note-label">Motivo</div>
+            <div class="prazo-note-text">${escHtml(p.motivoNaoCumprido)}</div>
+          </div>`
+        : '';
+
+      return `
+        <div class="prazo-card nao-cumprido-card">
+          <div class="prazo-top">
+            <div>
+              <div class="prazo-processo">
+                ${escHtml(p.processo || '—')}
+                ${p.tribunal ? ' <span class="tribunal-tag">' + escHtml(p.tribunal) + '</span>' : ''}
+              </div>
+              <div class="prazo-partes">${escHtml(p.autor || '—')} <span class="partes-vs">×</span> ${escHtml(p.reu || '—')}</div>
+              <div class="prazo-desc">${escHtml(p.desc)}</div>
+              ${motivoHtml}
+            </div>
+            <span class="status-badge badge-nao-cumprido">Não cumprido</span>
+          </div>
+
+          <div class="prazo-dates">
+            <div class="date-item">
+              <div class="di-label">Início</div>
+              <div class="di-value">${fmtDate(inicio)}</div>
+              <div class="di-day">${DIAS[inicio.getDay()].substring(0,3)}</div>
+            </div>
+            <div class="date-item">
+              <div class="di-label">Vencimento</div>
+              <div class="di-value">${fmtDate(fim)}</div>
+              <div class="di-day">${DIAS[fim.getDay()].substring(0,3)}</div>
+            </div>
+          </div>
+
+          <div class="prazo-footer">
+            <div class="prazo-footer-left">${advHtml}</div>
+            <div class="prazo-footer-right">
+              <div class="prazo-actions">
+                <button class="btn-icon edit" onclick="preencherFormularioPrazo(${p.id})">✎ Editar</button>
+                <button class="btn-icon whats" onclick="enviarWhatsApp(${p.id})">📲 WhatsApp</button>
+                <button class="btn-icon reabrir" onclick="reabrirPrazo(${p.id})">↩ Reabrir</button>
+                <button class="btn-icon gcal" onclick="abrirGoogleCalendar(${p.id})">📅 Calendar</button>
+                <button class="btn-icon delete" onclick="deletarPrazo(${p.id})">✕ Remover</button>
+              </div>
             </div>
           </div>
         </div>
@@ -1976,10 +3141,12 @@
   function trocarView(view) {
     viewAtiva = view;
     document.getElementById('vtab-ativos').classList.toggle('active', view==='ativos');
+    document.getElementById('vtab-nao-cumpridos').classList.toggle('active', view==='nao-cumpridos');
     document.getElementById('vtab-cumpridos').classList.toggle('active', view==='cumpridos');
     document.getElementById('filter-tabs-ativos').style.display = view==='ativos' ? 'flex' : 'none';
 
     if (view === 'ativos') renderPrazos();
+    else if (view === 'nao-cumpridos') renderNaoCumpridos();
     else renderCumpridos();
   }
 
@@ -1989,13 +3156,28 @@
     el.style.display = prazosCumpridos.length > 0 ? 'inline-flex' : 'none';
   }
 
+  function atualizarBadgeNaoCumpridos() {
+    const el = document.getElementById('badge-nao-cumpridos');
+    el.textContent = prazosNaoCumpridos.length;
+    el.style.display = prazosNaoCumpridos.length > 0 ? 'inline-flex' : 'none';
+  }
+
   function limparForm() {
+    editingPrazoId = null;
+    editingPrazoStatusMeta = '';
+    editingPrazoMotivoMeta = '';
+    atualizarModoFormulario();
     document.getElementById('f-processo').value = '';
     document.getElementById('f-tribunal').value = '';
     document.getElementById('f-autor').value = '';
     document.getElementById('f-reu').value = '';
-    document.getElementById('f-advogado').value = '';
+    Array.from(document.getElementById('f-advogado').options).forEach((option) => {
+      option.selected = false;
+    });
+    responsavelSelectionOrder = [];
+    updateResponsaveisPickerState();
     document.getElementById('f-desc').value = '';
+    document.getElementById('f-inicio').valueAsDate = new Date();
     document.getElementById('f-prazo').value = '';
     document.getElementById('f-fim-manual').value = '';
     document.getElementById('calc-result').style.display = 'none';
@@ -2003,12 +3185,31 @@
   }
 
   function enviarWhatsApp(id) {
-    const p = prazos.find(x => x.id === id);
+    const p = [...prazos, ...prazosNaoCumpridos].find(x => x.id === id);
     if (!p) return;
 
     const fim = new Date(p.fim + 'T12:00:00');
-    const phone = whatsMap[p.advogado] || '';
-    if (!phone) { showToast('Número não configurado para este advogado'); return; }
+    const responsaveis = p.responsaveis?.length ? p.responsaveis : [{ nome: p.advogado }];
+    const contatos = responsaveis
+      .map((resp) => ({ nome: resp.nome, phone: whatsMap[resp.nome] || '' }))
+      .filter((resp) => resp.phone);
+
+    if (contatos.length === 0) {
+      showToast('Número não configurado para os responsáveis deste prazo');
+      return;
+    }
+
+    let destino = contatos[0];
+    if (contatos.length > 1) {
+      const opcoes = contatos.map((item, index) => `${index + 1}. ${item.nome}`).join('\n');
+      const escolha = window.prompt(`Escolha o responsável para abrir no WhatsApp:\n${opcoes}`, '1');
+      if (escolha === null) return;
+      destino = contatos[Number(escolha) - 1];
+      if (!destino) {
+        showToast('Escolha inválida');
+        return;
+      }
+    }
 
     const msg = encodeURIComponent(
 `⚠️ *ALERTA DE PRAZO — FARO ADVOCACIA*
@@ -2019,12 +3220,12 @@
 📅 *Vencimento:* ${fmtDate(fim)} (${DIAS[fim.getDay()]})`
     );
 
-    window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+    window.open(`https://wa.me/${destino.phone}?text=${msg}`, '_blank');
     showToast('Abrindo WhatsApp...');
   }
 
   function abrirGoogleCalendar(id) {
-    const p = [...prazos, ...prazosCumpridos].find(x => x.id === id);
+    const p = [...prazos, ...prazosNaoCumpridos, ...prazosCumpridos].find(x => x.id === id);
     if (!p) {
       showToast('Prazo não encontrado');
       return;
@@ -2041,11 +3242,13 @@
     const fmtGcal = (d) =>
       `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
 
-    const titulo = `${p.desc || 'Prazo'} - ${p.processo || 'Sem processo'}`;
+    const titulo = `${p.desc || 'Prazo'} - ${p.autor || '—'} x ${p.reu || '—'}`;
     const detalhes =
-`Autor: ${p.autor || '—'}
+`Processo: ${p.processo || '—'}
+${p.tribunal || '—'}
+Autor: ${p.autor || '—'}
 Réu: ${p.reu || '—'}
-Advogado responsável: ${p.advogado || '—'}`;
+Advogado responsável: ${p.responsaveisLabel || p.advogado || '—'}`;
 
     const params = new URLSearchParams({
       action: 'TEMPLATE',
@@ -2059,7 +3262,7 @@ Advogado responsável: ${p.advogado || '—'}`;
   }
 
   function enviarEmail(id) {
-    const p = prazos.find(x => x.id === id);
+    const p = [...prazos, ...prazosNaoCumpridos].find(x => x.id === id);
     if (!p) return;
 
     const fim = new Date(p.fim+'T12:00:00');
@@ -2076,7 +3279,7 @@ Seguem as informações do prazo:
 Processo: ${p.processo || '—'}${p.tribunal ? ' — ' + p.tribunal : ''}
 Autor: ${p.autor || '—'}
 Réu: ${p.reu || '—'}
-Advogado responsável: ${p.advogado || '—'}
+Advogados responsáveis: ${p.responsaveisLabel || p.advogado || '—'}
 Tipo: ${p.desc}
 Início (publicação): ${fmtDate(inicio)} — ${DIAS[inicio.getDay()]}
 Vencimento: ${fmtDate(fim)} — ${DIAS[fim.getDay()]}
@@ -2104,7 +3307,7 @@ Faro Advocacia & Consultoria`
       return `• Proc. ${p.processo || '—'} | ${p.autor || '—'} × ${p.reu || '—'}
   ${p.desc}
   Vencimento: ${fmtDate(fim)} (${DIAS[fim.getDay()]})
-  Responsável: ${p.advogado || '—'}`;
+  Responsáveis: ${p.responsaveisLabel || p.advogado || '—'}`;
     }).join('\n\n');
 
     const assunto = encodeURIComponent(`[Faro Advocacia] Resumo de Prazos — ${new Date().toLocaleDateString('pt-BR')}`);
@@ -2145,6 +3348,16 @@ Faro Advocacia & Consultoria`
 
   async function initApp() {
     document.getElementById('f-inicio').valueAsDate = new Date();
+    atualizarModoFormulario();
+    document.getElementById('f-inicio').addEventListener('change', atualizarVencimentoAutomatico);
+    document.getElementById('f-prazo').addEventListener('input', atualizarVencimentoAutomatico);
+    document.getElementById('motivo-modal')?.addEventListener('click', (e) => {
+      if (e.target.id === 'motivo-modal') fecharModalMotivo(false);
+    });
+    document.getElementById('motivo-modal-input')?.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') confirmarModalMotivo();
+      if (e.key === 'Escape') fecharModalMotivo(false);
+    });
     document.getElementById('login-password').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') fazerLogin();
     });
