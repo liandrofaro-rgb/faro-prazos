@@ -1976,12 +1976,31 @@
     box.classList.toggle('show', !!message);
   }
 
+  function withTimeout(promise, ms, message) {
+    return Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        setTimeout(() => reject(new Error(message)), ms);
+      })
+    ]);
+  }
+
   function loadExternalScript(src) {
     return new Promise((resolve, reject) => {
       const existing = Array.from(document.scripts).find((script) => script.src === src);
       if (existing) {
-        if (window.supabase) resolve();
-        else existing.addEventListener('load', () => resolve(), { once: true });
+        if (window.supabase) {
+          resolve();
+          return;
+        }
+
+        const onLoad = () => resolve();
+        const onError = () => reject(new Error(`Falha ao carregar ${src}`));
+        existing.addEventListener('load', onLoad, { once: true });
+        existing.addEventListener('error', onError, { once: true });
+        setTimeout(() => {
+          if (!window.supabase) reject(new Error(`Tempo esgotado ao carregar ${src}`));
+        }, 12000);
         return;
       }
 
@@ -1991,6 +2010,9 @@
       script.onload = () => resolve();
       script.onerror = () => reject(new Error(`Falha ao carregar ${src}`));
       document.head.appendChild(script);
+      setTimeout(() => {
+        if (!window.supabase) reject(new Error(`Tempo esgotado ao carregar ${src}`));
+      }, 12000);
     });
   }
 
@@ -2069,7 +2091,11 @@
         return;
       }
 
-      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      const { data, error } = await withTimeout(
+        sb.auth.signInWithPassword({ email, password }),
+        15000,
+        'Tempo esgotado ao tentar entrar. Verifique a conexão com o Supabase.'
+      );
 
       if (error) {
         console.error(error);
