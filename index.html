@@ -1177,7 +1177,7 @@
       transform: translateY(10px);
       transition: all 0.25s;
       pointer-events: none;
-      z-index: 200;
+      z-index: 12000;
       box-shadow: var(--shadow-lg);
     }
 
@@ -1614,6 +1614,22 @@
       text-decoration: underline;
     }
 
+    .login-error {
+      display: none;
+      margin-top: 2px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #f0c4ba;
+      background: #fef2ef;
+      color: #9a3f2b;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .login-error.show {
+      display: block;
+    }
+
     .recovery-box {
       display: none;
       margin-top: 6px;
@@ -1670,6 +1686,7 @@
       </div>
 
       <button class="login-btn" id="login-submit" onclick="fazerLogin()">Entrar</button>
+      <div id="login-error" class="login-error"></div>
       <button type="button" class="login-link-btn" onclick="enviarRecuperacaoSenha()">Esqueci minha senha</button>
 
       <div id="recovery-box" class="recovery-box">
@@ -1952,6 +1969,13 @@
     btn.textContent = label;
   }
 
+  function setLoginError(message = '') {
+    const box = document.getElementById('login-error');
+    if (!box) return;
+    box.textContent = message;
+    box.classList.toggle('show', !!message);
+  }
+
   function loadExternalScript(src) {
     return new Promise((resolve, reject) => {
       const existing = Array.from(document.scripts).find((script) => script.src === src);
@@ -2020,23 +2044,38 @@
 
   async function fazerLogin() {
     setLoginButtonState(true, 'Entrando...');
+    setLoginError('');
     try {
       if (!await ensureSupabaseClient()) {
-        showToast('Não foi possível conectar ao serviço de autenticação');
+        const message = 'Não foi possível conectar ao serviço de autenticação';
+        setLoginError(message);
+        showToast(message);
         return;
       }
 
       const email = document.getElementById('login-email').value.trim();
       const password = document.getElementById('login-password').value;
 
-      if (!email) { showToast('Informe o e-mail'); return; }
-      if (!password) { showToast('Informe a senha'); return; }
+      if (!email) {
+        const message = 'Informe o e-mail';
+        setLoginError(message);
+        showToast(message);
+        return;
+      }
+      if (!password) {
+        const message = 'Informe a senha';
+        setLoginError(message);
+        showToast(message);
+        return;
+      }
 
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
 
       if (error) {
         console.error(error);
-        showToast(error.message || 'E-mail ou senha inválidos');
+        const message = error.message || 'E-mail ou senha inválidos';
+        setLoginError(message);
+        showToast(message);
         return;
       }
 
@@ -2048,10 +2087,13 @@
       await preencherResponsavel();
       await carregarPrazos();
       assinarRealtime();
+      setLoginError('');
       showToast('Login realizado com sucesso');
     } catch (error) {
       console.error('Falha inesperada no login', error);
-      showToast(error?.message || 'Falha inesperada ao entrar');
+      const message = error?.message || 'Falha inesperada ao entrar';
+      setLoginError(message);
+      showToast(message);
     } finally {
       setLoginButtonState(false, 'Entrar');
     }
