@@ -1895,14 +1895,17 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const SUPABASE_URL = "https://dhpjlblafvlvcrgcvwxf.supabase.co";
   const SUPABASE_KEY = "sb_publishable_KYFQzLFMjueBUre97McgoA_bwlpjDQs";
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const SUPABASE_CDN_SOURCES = [
+    "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2",
+    "https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"
+  ];
   const FORCE_LOGIN_ON_LOAD = true;
   const AUTH_TAB_KEY = 'faro_auth_tab_active';
 
+  let sb = null;
   let SESSION = null;
   let PROFILES_MAP = {};
   let prazos = [];
@@ -1934,9 +1937,60 @@
     'Thássila Smith': '5591981581361',
   };
 
-  sb.auth.onAuthStateChange((_event, session) => {
-    SESSION = session;
-  });
+  function updateLoginStatus(message) {
+    const footer = document.querySelector('.login-footer small');
+    if (!footer) return;
+    footer.textContent = message;
+  }
+
+  function loadExternalScript(src) {
+    return new Promise((resolve, reject) => {
+      const existing = Array.from(document.scripts).find((script) => script.src === src);
+      if (existing) {
+        if (window.supabase) resolve();
+        else existing.addEventListener('load', () => resolve(), { once: true });
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = src;
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error(`Falha ao carregar ${src}`));
+      document.head.appendChild(script);
+    });
+  }
+
+  async function ensureSupabaseClient() {
+    if (sb) return true;
+
+    if (!window.supabase) {
+      let loaded = false;
+      for (const src of SUPABASE_CDN_SOURCES) {
+        try {
+          await loadExternalScript(src);
+          if (window.supabase) {
+            loaded = true;
+            break;
+          }
+        } catch (error) {
+          console.warn(error);
+        }
+      }
+
+      if (!loaded || !window.supabase) {
+        updateLoginStatus('Não foi possível carregar o sistema. Verifique sua internet e recarregue a página.');
+        return false;
+      }
+    }
+
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    sb.auth.onAuthStateChange((_event, session) => {
+      SESSION = session;
+    });
+    updateLoginStatus('Uso interno · Faro Advocacia');
+    return true;
+  }
 
   function isRecoveryFlow() {
     return window.location.hash.includes('type=recovery');
@@ -1956,6 +2010,11 @@
   }
 
   async function fazerLogin() {
+    if (!await ensureSupabaseClient()) {
+      showToast('Não foi possível conectar ao serviço de autenticação');
+      return;
+    }
+
     const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
 
@@ -1982,6 +2041,11 @@
   }
 
   async function enviarRecuperacaoSenha() {
+    if (!await ensureSupabaseClient()) {
+      showToast('Não foi possível conectar ao serviço de autenticação');
+      return;
+    }
+
     const email = document.getElementById('login-email').value.trim();
     if (!email) {
       showToast('Informe seu e-mail para recuperar a senha');
@@ -2001,6 +2065,11 @@
   }
 
   async function redefinirSenha() {
+    if (!await ensureSupabaseClient()) {
+      showToast('Não foi possível conectar ao serviço de autenticação');
+      return;
+    }
+
     const senha = document.getElementById('recovery-password').value;
     const confirmar = document.getElementById('recovery-password-confirm').value;
 
@@ -2035,6 +2104,11 @@
   }
 
   async function ensureAuth() {
+    if (!await ensureSupabaseClient()) {
+      setLoginVisible(true);
+      return false;
+    }
+
     const recovery = isRecoveryFlow();
     const authTabActive = sessionStorage.getItem(AUTH_TAB_KEY) === '1';
 
@@ -3361,6 +3435,12 @@ Faro Advocacia & Consultoria`
     document.getElementById('login-password').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') fazerLogin();
     });
+
+    const supabaseReady = await ensureSupabaseClient();
+    if (!supabaseReady) {
+      setLoginVisible(true);
+      return;
+    }
 
     await limparCachesAntigos();
 
