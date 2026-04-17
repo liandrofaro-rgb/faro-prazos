@@ -1669,7 +1669,7 @@
         <input type="password" id="login-password" placeholder="Digite sua senha">
       </div>
 
-      <button class="login-btn" onclick="fazerLogin()">Entrar</button>
+      <button class="login-btn" id="login-submit" onclick="fazerLogin()">Entrar</button>
       <button type="button" class="login-link-btn" onclick="enviarRecuperacaoSenha()">Esqueci minha senha</button>
 
       <div id="recovery-box" class="recovery-box">
@@ -1943,6 +1943,15 @@
     footer.textContent = message;
   }
 
+  function setLoginButtonState(loading, label = 'Entrar') {
+    const btn = document.getElementById('login-submit');
+    if (!btn) return;
+    btn.disabled = loading;
+    btn.style.opacity = loading ? '0.7' : '1';
+    btn.style.cursor = loading ? 'wait' : 'pointer';
+    btn.textContent = label;
+  }
+
   function loadExternalScript(src) {
     return new Promise((resolve, reject) => {
       const existing = Array.from(document.scripts).find((script) => script.src === src);
@@ -2010,34 +2019,42 @@
   }
 
   async function fazerLogin() {
-    if (!await ensureSupabaseClient()) {
-      showToast('Não foi possível conectar ao serviço de autenticação');
-      return;
+    setLoginButtonState(true, 'Entrando...');
+    try {
+      if (!await ensureSupabaseClient()) {
+        showToast('Não foi possível conectar ao serviço de autenticação');
+        return;
+      }
+
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+
+      if (!email) { showToast('Informe o e-mail'); return; }
+      if (!password) { showToast('Informe a senha'); return; }
+
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        console.error(error);
+        showToast(error.message || 'E-mail ou senha inválidos');
+        return;
+      }
+
+      SESSION = data.session;
+      sessionStorage.setItem(AUTH_TAB_KEY, '1');
+      setLoginVisible(false);
+      document.getElementById('login-password').value = '';
+
+      await preencherResponsavel();
+      await carregarPrazos();
+      assinarRealtime();
+      showToast('Login realizado com sucesso');
+    } catch (error) {
+      console.error('Falha inesperada no login', error);
+      showToast(error?.message || 'Falha inesperada ao entrar');
+    } finally {
+      setLoginButtonState(false, 'Entrar');
     }
-
-    const email = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-password').value;
-
-    if (!email) { showToast('Informe o e-mail'); return; }
-    if (!password) { showToast('Informe a senha'); return; }
-
-    const { data, error } = await sb.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      console.error(error);
-      showToast('E-mail ou senha inválidos');
-      return;
-    }
-
-    SESSION = data.session;
-    sessionStorage.setItem(AUTH_TAB_KEY, '1');
-    setLoginVisible(false);
-    document.getElementById('login-password').value = '';
-
-    await preencherResponsavel();
-    await carregarPrazos();
-    assinarRealtime();
-    showToast('Login realizado com sucesso');
   }
 
   async function enviarRecuperacaoSenha() {
@@ -3451,6 +3468,17 @@ Faro Advocacia & Consultoria`
     await carregarPrazos();
     assinarRealtime();
   }
+
+  window.addEventListener('error', (event) => {
+    console.error('Erro global', event.error || event.message);
+  });
+
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('Promise rejeitada sem tratamento', event.reason);
+    const msg = event?.reason?.message || 'Erro inesperado no navegador';
+    showToast(msg);
+    setLoginButtonState(false, 'Entrar');
+  });
 
   initApp();
 </script>
