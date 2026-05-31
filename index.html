@@ -753,7 +753,37 @@
     .prazo-card.status-ok { border-left-color: var(--success); }
     .prazo-card.status-warn { border-left-color: var(--warning); }
     .prazo-card.status-urg { border-left-color: var(--danger); }
-    .prazo-card.status-expired { border-left-color: #ccc; opacity: 0.6; }
+    .prazo-card.status-expired {
+      border-left-color: #c63f32;
+      background: linear-gradient(180deg, #fff3f1 0%, #ffffff 22%);
+      box-shadow: 0 10px 28px rgba(198, 63, 50, 0.12);
+      padding-top: 46px;
+      overflow: visible;
+    }
+
+    .prazo-card.status-expired::before {
+      content: 'PRAZO VENCIDO';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      padding: 0 18px;
+      background: linear-gradient(90deg, #c63f32 0%, #df5d4f 100%);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      z-index: 0;
+    }
+
+    .prazo-card.status-expired > * {
+      position: relative;
+      z-index: 1;
+    }
 
     .prazo-top {
       display: flex;
@@ -816,7 +846,12 @@
     .badge-ok { background: var(--success-pale); color: var(--success); }
     .badge-warn { background: var(--warning-pale); color: #7a5a10; }
     .badge-urg { background: var(--danger-pale); color: var(--danger); }
-    .badge-expired { background: #f0f0f0; color: #888; }
+    .badge-expired {
+      background: #c63f32;
+      color: #fff;
+      border: 1px solid #b2372b;
+      box-shadow: 0 8px 18px rgba(198, 63, 50, 0.18);
+    }
     .badge-nao-cumprido { background: var(--danger-pale); color: var(--danger); }
 
     .prazo-dates {
@@ -2935,13 +2970,7 @@
     const todos = (data || []).map(mapPrazoBanco);
     const ativos = todos.filter(p => p.statusBanco === 'ativo');
     const naoCumpridosMarcados = ativos.filter(p => p.statusMeta === 'nao_cumprido');
-    const naoCumpridosAutomaticos = ativos.filter(p => getStatus(p) === 'expired');
     prazosNaoCumpridos = [...naoCumpridosMarcados];
-    naoCumpridosAutomaticos.forEach((prazo) => {
-      if (!prazosNaoCumpridos.some((item) => item.id === prazo.id)) {
-        prazosNaoCumpridos.push(prazo);
-      }
-    });
     prazos = ativos.filter(p => !prazosNaoCumpridos.some((item) => item.id === p.id));
     prazosCumpridos = todos.filter(p => p.statusBanco === 'cumprido');
 
@@ -3208,7 +3237,7 @@
 
     let filtrados = prazos;
     if (filtroAtivo === 'urgentes') {
-      filtrados = prazos.filter(p => ['urg', 'warn'].includes(getStatus(p)));
+      filtrados = prazos.filter(p => ['urg', 'warn', 'expired'].includes(getStatus(p)));
     } else if (filtroAtivo === 'ok') {
       filtrados = prazos.filter(p => getStatus(p) === 'ok');
     } else if (filtroAtivo === 'vencidos') {
@@ -3364,7 +3393,7 @@
       list.innerHTML = `<div class="empty-state">
         <div class="empty-icon">⚠</div>
         <p>${buscaPainel.trim() ? 'Nenhum prazo encontrado' : 'Nenhum prazo não cumprido'}</p>
-        <small>${buscaPainel.trim() ? 'Tente buscar por outro processo, parte, tribunal, descrição ou responsável' : 'Quando um prazo vencer sem conclusão, ele aparecerá aqui'}</small>
+        <small>${buscaPainel.trim() ? 'Tente buscar por outro processo, parte, tribunal, descrição ou responsável' : 'Quando um prazo for marcado como não cumprido, ele aparecerá aqui'}</small>
       </div>`;
       return;
     }
