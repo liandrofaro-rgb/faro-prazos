@@ -1824,12 +1824,20 @@
           <div class="email">thassila@faroadvocacia.adv.br</div>
         </div>
       </div>
+      <div class="recipient-item">
+        <div class="recipient-avatar">ME</div>
+        <div class="recipient-info">
+          <div class="name">Maria Eduarda</div>
+          <div class="email">eduarda@faroadvocacia.adv.br</div>
+        </div>
+      </div>
     </div>
 
     <div class="divider"></div>
 
     <button class="btn-primary" id="btn-salvar-prazo" onclick="salvarPrazo()">+ Adicionar ao painel</button>
     <button class="btn-secondary" id="btn-cancelar-edicao" onclick="cancelarEdicaoPrazo()" style="display:none">Cancelar edição</button>
+    <button class="btn-secondary" id="btn-email-24h" onclick="enviarEmailPrazos24h()" style="display:none">⚠ Enviar vencimentos 24h</button>
     <button class="btn-secondary" id="btn-email-geral" onclick="enviarEmailGeral()">↗ Enviar resumo por e-mail</button>
   </aside>
 
@@ -1941,7 +1949,7 @@
 
   const DIAS = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
   const MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-  const EMAILS = 'liandro@faroadvocacia.adv.br,camille@faroadvocacia.adv.br,thassila@faroadvocacia.adv.br';
+  const EMAILS = 'liandro@faroadvocacia.adv.br,camille@faroadvocacia.adv.br,thassila@faroadvocacia.adv.br,eduarda@faroadvocacia.adv.br';
   const RESPONSAVEIS_META_PREFIX = '[[RESP_IDS:';
   const RESPONSAVEIS_META_SUFFIX = ']]';
   const PRAZO_STATUS_META_PREFIX = '[[PRAZO_STATUS:';
@@ -1953,6 +1961,7 @@
     'Liandro Faro': '5591991585576',
     'Camille Carvalho': '5591993661088',
     'Thássila Smith': '5591981581361',
+    'Maria Eduarda': '5591991682389',
   };
 
   function updateLoginStatus(message) {
@@ -2767,6 +2776,7 @@
       'Liandro Faro': { initials: 'LF', color: '#1a3a5c' },
       'Camille Carvalho': { initials: 'CC', color: '#8b6914' },
       'Thássila Smith': { initials: 'TS', color: '#2d6a4f' },
+      'Maria Eduarda': { initials: 'ME', color: '#8f4f7a' },
     };
     return advMap[nome] || { initials: fallbackInitials.toUpperCase(), color: '#35527d' };
   }
@@ -2846,6 +2856,7 @@
     atualizarBadgeNaoCumpridos();
 
     document.getElementById('btn-email-geral').style.display = prazos.length > 0 ? 'block' : 'none';
+    document.getElementById('btn-email-24h').style.display = prazos.some((p) => getStatus(p) === 'urg') ? 'block' : 'none';
   }
 
   async function salvarPrazo() {
@@ -3498,6 +3509,27 @@ Faro Advocacia & Consultoria`
 
     const assunto = encodeURIComponent(`[Faro Advocacia] Resumo de Prazos — ${new Date().toLocaleDateString('pt-BR')}`);
     const corpo = encodeURIComponent(`Prezados,\n\nSeguem os prazos ativos:\n\n${linhas}\n\nFaro Advocacia & Consultoria`);
+    window.location.href = `mailto:${EMAILS}?subject=${assunto}&body=${corpo}`;
+    showToast('Abrindo cliente de e-mail...');
+  }
+
+  function enviarEmailPrazos24h() {
+    const urgentes = prazos.filter((p) => getStatus(p) === 'urg');
+    if (urgentes.length === 0) {
+      showToast('Nenhum prazo a vencer em 24 horas');
+      return;
+    }
+
+    const linhas = urgentes.map((p) => {
+      const fim = new Date(p.fim + 'T12:00:00');
+      return `• Proc. ${p.processo || '—'} | ${p.autor || '—'} × ${p.reu || '—'}
+  ${p.desc}
+  Vencimento: ${fmtDate(fim)} (${DIAS[fim.getDay()]})
+  Responsáveis: ${p.responsaveisLabel || p.advogado || '—'}`;
+    }).join('\n\n');
+
+    const assunto = encodeURIComponent(`[Faro Advocacia] Prazos vencendo em 24h — ${new Date().toLocaleDateString('pt-BR')}`);
+    const corpo = encodeURIComponent(`Prezados,\n\nSeguem os prazos com vencimento em 24 horas:\n\n${linhas}\n\nFaro Advocacia & Consultoria`);
     window.location.href = `mailto:${EMAILS}?subject=${assunto}&body=${corpo}`;
     showToast('Abrindo cliente de e-mail...');
   }
