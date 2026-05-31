@@ -1754,6 +1754,13 @@
     </div>
 
     <div class="field">
+      <label>Estagiários(as)</label>
+      <div id="f-estagiario-picker" class="responsaveis-picker"></div>
+      <select id="f-estagiario" class="hidden-multi" multiple></select>
+      <div class="hint">Clique nos nomes para marcar os estagiários vinculados ao prazo.</div>
+    </div>
+
+    <div class="field">
       <label>Descrição do prazo</label>
       <textarea id="f-desc" placeholder="Ex: Contestação, Recurso, Manifestação..."></textarea>
     </div>
@@ -1941,6 +1948,7 @@
   let buscaPainel = '';
   let realtimeChannel = null;
   let responsavelSelectionOrder = [];
+  let estagiarioSelectionOrder = [];
   let editingPrazoId = null;
   let editingPrazoStatusMeta = '';
   let editingPrazoMotivoMeta = '';
@@ -2255,15 +2263,21 @@
 
     const selResp = document.getElementById("f-advogado");
     const picker = document.getElementById("f-advogado-picker");
+    const selEst = document.getElementById("f-estagiario");
+    const pickerEst = document.getElementById("f-estagiario-picker");
     selResp.innerHTML = '';
     picker.innerHTML = '';
+    selEst.innerHTML = '';
+    pickerEst.innerHTML = '';
     responsavelSelectionOrder = [];
+    estagiarioSelectionOrder = [];
 
     (data || []).forEach(u => {
-      selResp.insertAdjacentHTML("beforeend", `<option value="${u.id}">${escHtml(u.nome)}</option>`);
+      const isEstagiario = isEstagiarioRole(u.role);
       const adv = getAdvStyle(u.nome);
-      picker.insertAdjacentHTML("beforeend", `
-        <button type="button" class="responsavel-option" data-id="${u.id}" onclick="toggleResponsavel('${u.id}')">
+      const optionHtml = `<option value="${u.id}">${escHtml(u.nome)}</option>`;
+      const buttonHtml = `
+        <button type="button" class="responsavel-option" data-id="${u.id}" onclick="toggleResponsavel('${u.id}', '${isEstagiario ? 'estagiario' : 'advogado'}')">
           <span class="responsavel-main">
             <span class="responsavel-avatar" style="background:${adv.color}">${adv.initials}</span>
             <span class="responsavel-text">
@@ -2272,14 +2286,26 @@
             </span>
           </span>
           <span class="responsavel-side">
-            <span class="responsavel-primary-badge">Principal</span>
+            <span class="responsavel-primary-badge">${isEstagiario ? 'Marcado' : 'Principal'}</span>
             <span class="responsavel-check" aria-hidden="true"></span>
           </span>
         </button>
-      `);
+      `;
+
+      if (isEstagiario) {
+        selEst.insertAdjacentHTML("beforeend", optionHtml);
+        pickerEst.insertAdjacentHTML("beforeend", buttonHtml);
+      } else {
+        selResp.insertAdjacentHTML("beforeend", optionHtml);
+        picker.insertAdjacentHTML("beforeend", buttonHtml);
+      }
     });
 
     updateResponsaveisPickerState();
+  }
+
+  function isEstagiarioRole(role) {
+    return /estag/i.test(String(role || ''));
   }
 
   function getFeriados(ano) {
@@ -2437,26 +2463,41 @@
       .replace(/"/g,'&quot;');
   }
 
-  function getSelectedResponsaveis() {
-    const options = Array.from(document.getElementById('f-advogado').options);
+  function getSelectedPeople(selectId, order) {
+    const options = Array.from(document.getElementById(selectId).options);
     const selectedIds = options.filter((option) => option.selected).map((option) => option.value);
 
-    responsavelSelectionOrder = responsavelSelectionOrder.filter((id) => selectedIds.includes(id));
+    let selectionOrder = order.filter((id) => selectedIds.includes(id));
     selectedIds.forEach((id) => {
-      if (!responsavelSelectionOrder.includes(id)) responsavelSelectionOrder.push(id);
+      if (!selectionOrder.includes(id)) selectionOrder.push(id);
     });
 
-    return responsavelSelectionOrder
+    return {
+      order: selectionOrder,
+      people: selectionOrder
       .map((id) => {
         const option = options.find((item) => item.value === id);
         return option ? { id: option.value, nome: option.textContent.trim() } : null;
       })
-      .filter(Boolean);
+      .filter(Boolean)
+    };
+  }
+
+  function getSelectedResponsaveis() {
+    const result = getSelectedPeople('f-advogado', responsavelSelectionOrder);
+    responsavelSelectionOrder = result.order;
+    return result.people;
+  }
+
+  function getSelectedEstagiarios() {
+    const result = getSelectedPeople('f-estagiario', estagiarioSelectionOrder);
+    estagiarioSelectionOrder = result.order;
+    return result.people;
   }
 
   function updateResponsaveisPickerState() {
     const selecionados = getSelectedResponsaveis().map((item) => item.id);
-    document.querySelectorAll('.responsavel-option').forEach((button) => {
+    document.querySelectorAll('#f-advogado-picker .responsavel-option').forEach((button) => {
       const selected = selecionados.includes(button.dataset.id);
       const isPrimary = selected && selecionados[0] === button.dataset.id;
       button.classList.toggle('selected', selected);
@@ -2466,19 +2507,37 @@
         subtitle.textContent = isPrimary ? 'Responsável principal' : selected ? 'Responsável selecionado' : 'Toque para marcar';
       }
     });
+
+    const estagiariosSelecionados = getSelectedEstagiarios().map((item) => item.id);
+    document.querySelectorAll('#f-estagiario-picker .responsavel-option').forEach((button) => {
+      const selected = estagiariosSelecionados.includes(button.dataset.id);
+      button.classList.toggle('selected', selected);
+      button.classList.remove('primary');
+      const subtitle = button.querySelector('.responsavel-text span');
+      if (subtitle) {
+        subtitle.textContent = selected ? 'Estagiário selecionado' : 'Toque para marcar';
+      }
+    });
   }
 
-  function toggleResponsavel(id) {
-    const option = Array.from(document.getElementById('f-advogado').options).find((item) => item.value === id);
+  function toggleResponsavel(id, tipo = 'advogado') {
+    const selectId = tipo === 'estagiario' ? 'f-estagiario' : 'f-advogado';
+    const option = Array.from(document.getElementById(selectId).options).find((item) => item.value === id);
     if (!option) return;
 
     if (option.selected) {
       option.selected = false;
-      responsavelSelectionOrder = responsavelSelectionOrder.filter((item) => item !== id);
+      if (tipo === 'estagiario') estagiarioSelectionOrder = estagiarioSelectionOrder.filter((item) => item !== id);
+      else responsavelSelectionOrder = responsavelSelectionOrder.filter((item) => item !== id);
     } else {
       option.selected = true;
-      responsavelSelectionOrder = responsavelSelectionOrder.filter((item) => item !== id);
-      responsavelSelectionOrder.push(id);
+      if (tipo === 'estagiario') {
+        estagiarioSelectionOrder = estagiarioSelectionOrder.filter((item) => item !== id);
+        estagiarioSelectionOrder.push(id);
+      } else {
+        responsavelSelectionOrder = responsavelSelectionOrder.filter((item) => item !== id);
+        responsavelSelectionOrder.push(id);
+      }
     }
 
     updateResponsaveisPickerState();
@@ -2737,13 +2796,24 @@
     Array.from(document.getElementById('f-advogado').options).forEach((option) => {
       option.selected = false;
     });
+    Array.from(document.getElementById('f-estagiario').options).forEach((option) => {
+      option.selected = false;
+    });
 
     responsavelSelectionOrder = [];
+    estagiarioSelectionOrder = [];
     (prazo.responsaveis || []).forEach((resp) => {
-      const option = Array.from(document.getElementById('f-advogado').options).find((item) => item.value === resp.id);
-      if (!option) return;
-      option.selected = true;
-      responsavelSelectionOrder.push(resp.id);
+      const optionAdv = Array.from(document.getElementById('f-advogado').options).find((item) => item.value === resp.id);
+      if (optionAdv) {
+        optionAdv.selected = true;
+        responsavelSelectionOrder.push(resp.id);
+        return;
+      }
+      const optionEst = Array.from(document.getElementById('f-estagiario').options).find((item) => item.value === resp.id);
+      if (optionEst) {
+        optionEst.selected = true;
+        estagiarioSelectionOrder.push(resp.id);
+      }
     });
 
     updateResponsaveisPickerState();
@@ -2865,9 +2935,11 @@
     const autor = document.getElementById('f-autor').value.trim();
     const reu = document.getElementById('f-reu').value.trim();
     const responsaveisSelecionados = getSelectedResponsaveis();
+    const estagiariosSelecionados = getSelectedEstagiarios();
+    const participantesSelecionados = [...responsaveisSelecionados, ...estagiariosSelecionados];
     const advogado_id = responsaveisSelecionados[0]?.id || '';
     const descricaoBase = document.getElementById('f-desc').value.trim();
-    const descricaoComResponsaveis = appendResponsaveisMeta(descricaoBase, responsaveisSelecionados.map((item) => item.id));
+    const descricaoComResponsaveis = appendResponsaveisMeta(descricaoBase, participantesSelecionados.map((item) => item.id));
     const descricao = appendPrazoMotivoMeta(
       appendPrazoStatusMeta(descricaoComResponsaveis, editingPrazoStatusMeta),
       editingPrazoMotivoMeta
@@ -3371,7 +3443,11 @@
     Array.from(document.getElementById('f-advogado').options).forEach((option) => {
       option.selected = false;
     });
+    Array.from(document.getElementById('f-estagiario').options).forEach((option) => {
+      option.selected = false;
+    });
     responsavelSelectionOrder = [];
+    estagiarioSelectionOrder = [];
     updateResponsaveisPickerState();
     document.getElementById('f-desc').value = '';
     document.getElementById('f-inicio').valueAsDate = new Date();
