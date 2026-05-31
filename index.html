@@ -2411,17 +2411,7 @@
   }
 
   function atualizarDiasPelaDataFinal() {
-    const inicio = parseInputDate(document.getElementById('f-inicio').value);
     const fim = parseInputDate(document.getElementById('f-fim-manual').value);
-    const prazoInput = document.getElementById('f-prazo');
-
-    if (!inicio || !fim) {
-      if (!fim) prazoInput.value = '';
-      return atualizarPreviewVencimento(fim);
-    }
-
-    const dias = difsUteis(inicio, fim);
-    prazoInput.value = dias >= 0 ? String(dias) : '';
     return atualizarPreviewVencimento(fim);
   }
 
