@@ -2271,10 +2271,18 @@
 
     const pessoas = [...(data || [])];
     FALLBACK_PROFILES.forEach((fallback) => {
-      const exists = pessoas.some((item) =>
+      const existingIndex = pessoas.findIndex((item) =>
         item.id === fallback.id || normalizePersonKey(item.nome) === normalizePersonKey(fallback.nome)
       );
-      if (!exists) pessoas.push(fallback);
+      if (existingIndex >= 0) {
+        pessoas[existingIndex] = {
+          ...fallback,
+          ...pessoas[existingIndex],
+          role: isEstagiarioRole(pessoas[existingIndex]?.role) ? pessoas[existingIndex].role : fallback.role
+        };
+        return;
+      }
+      pessoas.push(fallback);
     });
     pessoas.sort((a, b) => String(a.nome || '').localeCompare(String(b.nome || ''), 'pt-BR'));
 
