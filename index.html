@@ -1964,6 +1964,9 @@
   const PRAZO_STATUS_META_SUFFIX = ']]';
   const PRAZO_MOTIVO_META_PREFIX = '[[PRAZO_MOTIVO:';
   const PRAZO_MOTIVO_META_SUFFIX = ']]';
+  const FALLBACK_PROFILES = [
+    { id: 'fallback:maria-eduarda', nome: 'Maria Eduarda', role: 'Estagiaria' }
+  ];
 
   const whatsMap = {
     'Liandro Faro': '5591991585576',
@@ -1992,6 +1995,14 @@
     if (!box) return;
     box.textContent = message;
     box.classList.toggle('show', !!message);
+  }
+
+  function normalizePersonKey(value) {
+    return String(value || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim()
+      .toLowerCase();
   }
 
   function withTimeout(promise, ms, message) {
@@ -2258,8 +2269,17 @@
       return;
     }
 
+    const pessoas = [...(data || [])];
+    FALLBACK_PROFILES.forEach((fallback) => {
+      const exists = pessoas.some((item) =>
+        item.id === fallback.id || normalizePersonKey(item.nome) === normalizePersonKey(fallback.nome)
+      );
+      if (!exists) pessoas.push(fallback);
+    });
+    pessoas.sort((a, b) => String(a.nome || '').localeCompare(String(b.nome || ''), 'pt-BR'));
+
     PROFILES_MAP = {};
-    (data || []).forEach(p => PROFILES_MAP[p.id] = p.nome);
+    pessoas.forEach(p => PROFILES_MAP[p.id] = p.nome);
 
     const selResp = document.getElementById("f-advogado");
     const picker = document.getElementById("f-advogado-picker");
@@ -2272,7 +2292,7 @@
     responsavelSelectionOrder = [];
     estagiarioSelectionOrder = [];
 
-    (data || []).forEach(u => {
+    pessoas.forEach(u => {
       const isEstagiario = isEstagiarioRole(u.role);
       const adv = getAdvStyle(u.nome);
       const optionHtml = `<option value="${u.id}">${escHtml(u.nome)}</option>`;
