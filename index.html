@@ -3211,6 +3211,14 @@
       (m) => `<mark style="background:#e8b84b55;color:#8a6718;padding:0 2px;border-radius:3px;font-weight:700;">${m}</mark>`
     );
     escapado = escapado.replace(
+      /\bprazos?\b/gi,
+      (m) => `<mark style="background:#fff3a3;color:#7a5a10;padding:0 2px;border-radius:3px;font-weight:700;">${m}</mark>`
+    );
+    escapado = escapado.replace(
+      /\b(intimad[oa]s?|citad[oa]s?)\b/gi,
+      (m) => `<mark style="background:#d6e8ff;color:#1a4fb8;padding:0 2px;border-radius:3px;font-weight:700;">${m}</mark>`
+    );
+    escapado = escapado.replace(
       /(\d{1,3})\s*(\([^)]*\))?\s*dias/gi,
       (m) => `<mark style="background:#c0614a33;color:#c0614a;padding:0 2px;border-radius:3px;font-weight:700;">${m}</mark>`
     );
