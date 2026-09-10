@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -3203,6 +3204,38 @@
     return fmtDate(new Date(`${value}T12:00:00`));
   }
 
+  function destacarNomeEPrazos(textoOriginal) {
+    let escapado = escHtml(textoOriginal);
+    escapado = escapado.replace(
+      /LIANDRO(\s+MOREIRA)?(\s+DA)?(\s+CUNHA)?(\s+FARO)?/gi,
+      (m) => `<mark style="background:#e8b84b55;color:#8a6718;padding:0 2px;border-radius:3px;font-weight:700;">${m}</mark>`
+    );
+    escapado = escapado.replace(
+      /(\d{1,3})\s*(\([^)]*\))?\s*dias/gi,
+      (m) => `<mark style="background:#c0614a33;color:#c0614a;padding:0 2px;border-radius:3px;font-weight:700;">${m}</mark>`
+    );
+    return escapado;
+  }
+
+  function alternarTextoDjen(id) {
+    const publicacao = publicacoesDjen.find((item) => item.id === id);
+    if (!publicacao) return;
+    const span = document.getElementById(`djen-resumo-texto-${id}`);
+    const container = document.getElementById(`djen-resumo-${id}`);
+    const btn = container?.querySelector('button');
+    if (!span || !btn) return;
+    const expandido = span.dataset.expandido === '1';
+    if (expandido) {
+      span.innerHTML = destacarNomeEPrazos(publicacao.resumo || publicacao.texto.slice(0, 500));
+      span.dataset.expandido = '0';
+      btn.textContent = 'Ver texto completo';
+    } else {
+      span.innerHTML = destacarNomeEPrazos(publicacao.texto);
+      span.dataset.expandido = '1';
+      btn.textContent = 'Mostrar menos';
+    }
+  }
+
   function renderPublicacoesDjen(loadError = null) {
     const list = document.getElementById('prazo-list');
     if (!list) return;
@@ -3276,7 +3309,7 @@
             </div>
           </div>
 
-          <div class="djen-summary"><strong>Resumo automático:</strong> ${escHtml(resumo)}</div>
+          <div class="djen-summary" id="djen-resumo-${p.id}"><strong>Resumo automático:</strong> <span id="djen-resumo-texto-${p.id}">${destacarNomeEPrazos(resumo)}</span> <button type="button" onclick="alternarTextoDjen(${p.id})" style="margin-left:8px;background:none;border:1px solid var(--gold);color:var(--gold);border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;">Ver texto completo</button></div>
           <div class="djen-warning">O cálculo somente será incluído nos prazos ativos depois da conferência humana.</div>
 
           <div class="prazo-footer">
