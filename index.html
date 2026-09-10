@@ -1347,6 +1347,87 @@
       background: #bb5843;
     }
 
+    .djen-card {
+      border-left: 4px solid var(--gold);
+      background: #fffdf8;
+    }
+
+    .djen-card.possivel-prazo {
+      border-left-color: var(--warning);
+      background: var(--warning-pale);
+    }
+
+    .djen-card .prazo-desc {
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    .djen-summary {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 7px;
+      background: rgba(26, 43, 74, 0.045);
+      color: var(--text-muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .djen-summary strong {
+      color: var(--navy);
+    }
+
+    .djen-warning {
+      margin-top: 10px;
+      color: #7f6730;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .djen-source-link {
+      color: var(--navy);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .djen-source-link:hover {
+      color: var(--gold);
+      text-decoration: underline;
+    }
+
+    .djen-config-state {
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--white);
+      text-align: left;
+    }
+
+    .djen-config-state h3 {
+      color: var(--navy);
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .djen-config-state p {
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .badge-djen-express {
+      background: var(--gold-pale);
+      color: #8a6718;
+      border: 1px solid #e8d5a0;
+    }
+
+    .badge-djen-possible {
+      background: var(--warning-pale);
+      color: #7f6730;
+      border: 1px solid #ead59b;
+    }
+
     @media (max-width: 900px) {
       header {
         height: auto;
@@ -1910,6 +1991,7 @@
     <div class="section-header">
       <div class="view-tabs">
         <button class="view-tab active" id="vtab-ativos" onclick="trocarView('ativos')">Prazos Ativos</button>
+        <button class="view-tab" id="vtab-djen" onclick="trocarView('djen')">DJEN <span id="badge-djen" class="cumpridos-count">0</span></button>
         <button class="view-tab" id="vtab-cumpridos" onclick="trocarView('cumpridos')">✔ Cumpridos <span id="badge-cumpridos" class="cumpridos-count">0</span></button>
         <button class="view-tab" id="vtab-nao-cumpridos" onclick="trocarView('nao-cumpridos')">Não cumpridos <span id="badge-nao-cumpridos" class="cumpridos-count">0</span></button>
       </div>
@@ -1919,6 +2001,11 @@
           <button class="filter-tab active" onclick="filtrar('todos', this)">Todos</button>
           <button class="filter-tab" onclick="filtrar('urgentes', this)">Urgentes</button>
           <button class="filter-tab" onclick="filtrar('ok', this)">Em dia</button>
+        </div>
+        <div class="filter-tabs" id="filter-tabs-djen" style="display:none">
+          <button class="filter-tab active" onclick="filtrarDjen('todos', this)">Todos</button>
+          <button class="filter-tab" onclick="filtrarDjen('prazo_expresso', this)">Prazo expresso</button>
+          <button class="filter-tab" onclick="filtrarDjen('possivel_prazo', this)">Possível prazo</button>
         </div>
         <div class="search-wrap">
           <span class="search-icon">⌕</span>
@@ -1978,13 +2065,16 @@
   let prazos = [];
   let prazosNaoCumpridos = [];
   let prazosCumpridos = [];
+  let publicacoesDjen = [];
   let filtroAtivo = 'todos';
+  let filtroDjenAtivo = 'todos';
   let viewAtiva = 'ativos';
   let buscaPainel = '';
   let realtimeChannel = null;
   let responsavelSelectionOrder = [];
   let estagiarioSelectionOrder = [];
   let editingPrazoId = null;
+  let editingDjenImportId = null;
   let editingPrazoStatusMeta = '';
   let editingPrazoMotivoMeta = '';
   let motivoModalResolver = null;
@@ -2763,6 +2853,7 @@
 
     if (viewAtiva === 'ativos') renderPrazos();
     else if (viewAtiva === 'cumpridos') renderCumpridos();
+    else if (viewAtiva === 'djen') renderPublicacoesDjen();
     else renderNaoCumpridos();
   }
 
@@ -2828,9 +2919,72 @@
     if (!title || !btnSalvar || !btnCancelar) return;
 
     const editando = editingPrazoId !== null;
-    title.textContent = editando ? 'Editar Prazo' : 'Cadastrar Prazo';
-    btnSalvar.textContent = editando ? 'Salvar alterações' : '+ Adicionar ao painel';
-    btnCancelar.style.display = editando ? 'block' : 'none';
+    const importandoDjen = editingDjenImportId !== null;
+    title.textContent = importandoDjen ? 'Revisar Prazo do DJEN' : (editando ? 'Editar Prazo' : 'Cadastrar Prazo');
+    btnSalvar.textContent = importandoDjen ? 'Confirmar e adicionar prazo' : (editando ? 'Salvar alterações' : '+ Adicionar ao painel');
+    btnCancelar.style.display = editando || importandoDjen ? 'block' : 'none';
+  }
+
+  function selecionarResponsavelPadraoDjen() {
+    const options = Array.from(document.getElementById('f-advogado').options);
+    const liandro = options.find((option) => normalizePersonKey(option.textContent).includes('liandro'));
+    if (!liandro) return;
+    liandro.selected = true;
+    responsavelSelectionOrder = [liandro.value];
+  }
+
+  function prepararPrazoDjen(id) {
+    const publicacao = publicacoesDjen.find((item) => item.id === id);
+    if (!publicacao) {
+      showToast('Publicação não encontrada');
+      return;
+    }
+
+    limparForm();
+    editingDjenImportId = id;
+    document.getElementById('f-processo').value = publicacao.processo || '';
+    document.getElementById('f-tribunal').value = publicacao.tribunal || '';
+    document.getElementById('f-autor').value = publicacao.autor || 'Autor a conferir';
+    document.getElementById('f-reu').value = publicacao.reu || 'Réu a conferir';
+    document.getElementById('f-desc').value = publicacao.descricaoSugerida || publicacao.tipoComunicacao || 'Prazo a conferir';
+    document.getElementById('f-inicio').value = publicacao.dataPublicacaoPreliminar || '';
+
+    const dias = Number(publicacao.prazoDias);
+    document.getElementById('f-prazo').value = Number.isInteger(dias) && dias > 0 ? String(dias) : '';
+    document.getElementById('f-fim-manual').value = publicacao.vencimentoPreliminar || '';
+    modoEdicaoData = publicacao.vencimentoPreliminar ? 'fim' : 'prazo';
+
+    selecionarResponsavelPadraoDjen();
+    updateResponsaveisPickerState();
+    atualizarModoFormulario();
+
+    if (publicacao.vencimentoPreliminar) sincronizarDatasFormulario('fim');
+    else if (publicacao.dataPublicacaoPreliminar && Number.isInteger(dias) && dias > 0) sincronizarDatasFormulario('prazo');
+
+    document.querySelector('.sidebar')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!publicacao.prazoDias) document.getElementById('f-prazo').focus();
+    else document.getElementById('f-desc').focus();
+    showToast('Confira todos os dados antes de adicionar o prazo');
+  }
+
+  async function descartarPublicacaoDjen(id) {
+    if (!confirm('Descartar esta publicação sem gerar prazo?')) return;
+    const { error } = await sb
+      .from('publicacoes_djen')
+      .update({
+        status: 'descartado',
+        revisado_por: SESSION.user.id,
+        revisado_em: new Date().toISOString()
+      })
+      .eq('id', id);
+
+    if (error) {
+      console.error(error);
+      showToast('Erro ao descartar publicação');
+      return;
+    }
+    showToast('Publicação descartada');
+    await carregarPublicacoesDjen();
   }
 
   function preencherFormularioPrazo(id) {
@@ -2840,6 +2994,7 @@
       return;
     }
 
+    editingDjenImportId = null;
     editingPrazoId = id;
     editingPrazoStatusMeta = prazo.statusMeta || '';
     editingPrazoMotivoMeta = prazo.motivoNaoCumprido || '';
@@ -2940,6 +3095,220 @@
     };
   }
 
+  function mapPublicacaoDjen(row) {
+    return {
+      id: row.id,
+      fonteId: row.fonte_id,
+      processo: row.numero_processo || '',
+      tribunal: row.sigla_tribunal || '',
+      orgao: row.nome_orgao || '',
+      autor: row.autor || '',
+      reu: row.reu || '',
+      tipoComunicacao: row.tipo_comunicacao || '',
+      tipoDocumento: row.tipo_documento || '',
+      meio: row.meio || '',
+      texto: row.texto || '',
+      resumo: row.resumo || '',
+      descricaoSugerida: row.descricao_sugerida || '',
+      link: row.link || '',
+      dataDisponibilizacao: row.data_disponibilizacao || '',
+      dataPublicacaoPreliminar: row.data_publicacao_preliminar || '',
+      prazoDias: row.prazo_dias,
+      vencimentoPreliminar: row.data_vencimento_preliminar || '',
+      classificacao: row.classificacao || 'possivel_prazo',
+      status: row.status || 'pendente',
+      oabEncontrada: row.oab_encontrada || '',
+      criadoEm: row.criado_em || ''
+    };
+  }
+
+  function isTabelaDjenAusente(error) {
+    const texto = `${error?.code || ''} ${error?.message || ''}`.toLowerCase();
+    return texto.includes('42p01') || texto.includes('pgrst205') || texto.includes('could not find the table');
+  }
+
+  async function carregarPublicacoesDjen() {
+    const { data, error } = await sb
+      .from('publicacoes_djen')
+      .select(`
+        id,
+        fonte_id,
+        numero_processo,
+        sigla_tribunal,
+        nome_orgao,
+        autor,
+        reu,
+        tipo_comunicacao,
+        tipo_documento,
+        meio,
+        texto,
+        resumo,
+        descricao_sugerida,
+        link,
+        data_disponibilizacao,
+        data_publicacao_preliminar,
+        prazo_dias,
+        data_vencimento_preliminar,
+        classificacao,
+        status,
+        oab_encontrada,
+        criado_em
+      `)
+      .eq('status', 'pendente')
+      .order('data_disponibilizacao', { ascending: false });
+
+    if (error) {
+      if (!isTabelaDjenAusente(error)) console.error(error);
+      publicacoesDjen = [];
+      atualizarBadgeDjen();
+      if (viewAtiva === 'djen') renderPublicacoesDjen(error);
+      return;
+    }
+
+    publicacoesDjen = (data || []).map(mapPublicacaoDjen);
+    atualizarBadgeDjen();
+    if (viewAtiva === 'djen') renderPublicacoesDjen();
+  }
+
+  function publicacaoDjenCombinaBusca(publicacao) {
+    const termo = normalizarBusca(buscaPainel);
+    if (!termo) return true;
+    const haystack = normalizarBusca([
+      publicacao.processo,
+      publicacao.tribunal,
+      publicacao.orgao,
+      publicacao.autor,
+      publicacao.reu,
+      publicacao.tipoComunicacao,
+      publicacao.tipoDocumento,
+      publicacao.resumo,
+      publicacao.descricaoSugerida,
+      publicacao.texto,
+      publicacao.oabEncontrada
+    ].filter(Boolean).join(' '));
+    return haystack.includes(termo);
+  }
+
+  function urlPublicaSegura(value) {
+    try {
+      const url = new URL(value);
+      return ['https:', 'http:'].includes(url.protocol) ? url.href : '';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  function fmtDateValue(value) {
+    if (!value) return '—';
+    return fmtDate(new Date(`${value}T12:00:00`));
+  }
+
+  function renderPublicacoesDjen(loadError = null) {
+    const list = document.getElementById('prazo-list');
+    if (!list) return;
+
+    if (loadError && isTabelaDjenAusente(loadError)) {
+      list.innerHTML = `<div class="empty-state">
+        <div class="djen-config-state">
+          <h3>Integração DJEN ainda não ativada</h3>
+          <p>A interface está pronta. Falta aplicar a migração do Supabase e publicar a função automática de consulta antes que as publicações apareçam aqui.</p>
+        </div>
+      </div>`;
+      return;
+    }
+
+    const filtradas = publicacoesDjen
+      .filter((p) => filtroDjenAtivo === 'todos' || p.classificacao === filtroDjenAtivo)
+      .filter(publicacaoDjenCombinaBusca);
+
+    if (filtradas.length === 0) {
+      list.innerHTML = `<div class="empty-state">
+        <div class="empty-icon">📨</div>
+        <p>${buscaPainel.trim() ? 'Nenhuma publicação encontrada' : 'Nenhum prazo importado aguardando conferência'}</p>
+        <small>${buscaPainel.trim() ? 'Tente buscar por outro processo, parte, tribunal ou conteúdo' : 'A consulta automática mostrará aqui apenas prazo expresso ou possível prazo'}</small>
+      </div>`;
+      return;
+    }
+
+    list.innerHTML = filtradas.map((p) => {
+      const possivel = p.classificacao === 'possivel_prazo';
+      const link = urlPublicaSegura(p.link);
+      const resumo = p.resumo || p.texto.slice(0, 420) || 'Teor não informado.';
+      const descricao = p.descricaoSugerida || (possivel ? 'Possível prazo a definir' : `Prazo de ${p.prazoDias || '—'} dias úteis`);
+      const badge = possivel
+        ? '<span class="status-badge badge-djen-possible">⚠ Possível prazo</span>'
+        : '<span class="status-badge badge-djen-express">Prazo expresso</span>';
+
+      return `
+        <div class="prazo-card djen-card ${possivel ? 'possivel-prazo' : ''}">
+          <div class="prazo-top">
+            <div>
+              <div class="prazo-processo">
+                ${escHtml(p.processo || 'Processo não informado')}
+                ${p.tribunal ? ' <span class="tribunal-tag">' + escHtml(p.tribunal) + '</span>' : ''}
+              </div>
+              <div class="prazo-partes">${escHtml(p.autor || 'Autor a conferir')} <span class="partes-vs">×</span> ${escHtml(p.reu || 'Réu a conferir')}</div>
+              <div class="prazo-desc">${escHtml(descricao)}</div>
+            </div>
+            ${badge}
+          </div>
+
+          <div class="prazo-dates">
+            <div class="date-item">
+              <div class="di-label">Disponibilização</div>
+              <div class="di-value">${fmtDateValue(p.dataDisponibilizacao)}</div>
+              <div class="di-day">DJEN</div>
+            </div>
+            <div class="date-item">
+              <div class="di-label">Publicação preliminar</div>
+              <div class="di-value">${fmtDateValue(p.dataPublicacaoPreliminar)}</div>
+              <div class="di-day">a conferir</div>
+            </div>
+            <div class="date-item">
+              <div class="di-label">Prazo identificado</div>
+              <div class="di-value">${p.prazoDias || '—'}</div>
+              <div class="di-day">${p.prazoDias ? 'dias úteis' : 'não expresso'}</div>
+            </div>
+            <div class="date-item">
+              <div class="di-label">Vencimento preliminar</div>
+              <div class="di-value">${fmtDateValue(p.vencimentoPreliminar)}</div>
+              <div class="di-day">a conferir</div>
+            </div>
+          </div>
+
+          <div class="djen-summary"><strong>Resumo automático:</strong> ${escHtml(resumo)}</div>
+          <div class="djen-warning">O cálculo somente será incluído nos prazos ativos depois da conferência humana.</div>
+
+          <div class="prazo-footer">
+            <div class="prazo-footer-left">
+              ${link ? `<a class="djen-source-link" href="${escHtml(link)}" target="_blank" rel="noopener noreferrer">↗ Abrir publicação oficial</a>` : '<span class="djen-source-link">Link oficial indisponível</span>'}
+            </div>
+            <div class="prazo-footer-right">
+              <div class="prazo-actions">
+                <button class="btn-icon edit" onclick="prepararPrazoDjen(${p.id})">✎ Revisar e cadastrar</button>
+                <button class="btn-icon delete" onclick="descartarPublicacaoDjen(${p.id})">✕ Descartar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function atualizarBadgeDjen() {
+    const el = document.getElementById('badge-djen');
+    if (!el) return;
+    el.textContent = publicacoesDjen.length;
+    el.style.display = publicacoesDjen.length > 0 ? 'inline-flex' : 'none';
+  }
+
+  function filtrarDjen(filtro, btn) {
+    filtroDjenAtivo = filtro;
+    document.querySelectorAll('#filter-tabs-djen .filter-tab').forEach((item) => item.classList.remove('active'));
+    btn?.classList.add('active');
+    renderPublicacoesDjen();
+  }
+
   async function carregarPrazos() {
     const { data, error } = await sb
       .from('prazos')
@@ -2976,6 +3345,7 @@
 
     if (viewAtiva === 'ativos') renderPrazos();
     else if (viewAtiva === 'nao-cumpridos') renderNaoCumpridos();
+    else if (viewAtiva === 'djen') renderPublicacoesDjen();
     else renderCumpridos();
 
     atualizarStats();
@@ -3030,6 +3400,7 @@
       dias
     };
 
+    const importacaoDjenId = editingDjenImportId;
     const query = editingPrazoId !== null
       ? sb.from('prazos').update(payload).eq('id', editingPrazoId)
       : sb.from('prazos').insert({
@@ -3046,10 +3417,27 @@
       return;
     }
 
+    if (importacaoDjenId !== null) {
+      const { error: djenError } = await sb
+        .from('publicacoes_djen')
+        .update({
+          status: 'confirmado',
+          revisado_por: SESSION.user.id,
+          revisado_em: new Date().toISOString(),
+          confirmado_em: new Date().toISOString()
+        })
+        .eq('id', importacaoDjenId);
+      if (djenError) {
+        console.error(djenError);
+        showToast('Prazo salvo, mas a publicação precisa ser marcada manualmente');
+      }
+    }
+
     const editando = editingPrazoId !== null;
     limparForm();
     await carregarPrazos();
-    showToast(editando ? 'Prazo atualizado com sucesso!' : 'Prazo cadastrado com sucesso!');
+    if (importacaoDjenId !== null) await carregarPublicacoesDjen();
+    showToast(importacaoDjenId !== null ? 'Prazo conferido e adicionado ao painel!' : (editando ? 'Prazo atualizado com sucesso!' : 'Prazo cadastrado com sucesso!'));
   }
 
   async function deletarPrazo(id) {
@@ -3189,6 +3577,9 @@
       .channel('prazos-realtime')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'prazos' }, async () => {
         await carregarPrazos();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'publicacoes_djen' }, async () => {
+        await carregarPublicacoesDjen();
       })
       .subscribe((status) => {
         console.log('Realtime status:', status);
@@ -3458,7 +3849,7 @@
 
   function filtrar(filtro, btn) {
     filtroAtivo = filtro;
-    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#filter-tabs-ativos .filter-tab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     renderPrazos();
   }
@@ -3466,12 +3857,15 @@
   function trocarView(view) {
     viewAtiva = view;
     document.getElementById('vtab-ativos').classList.toggle('active', view==='ativos');
+    document.getElementById('vtab-djen').classList.toggle('active', view==='djen');
     document.getElementById('vtab-nao-cumpridos').classList.toggle('active', view==='nao-cumpridos');
     document.getElementById('vtab-cumpridos').classList.toggle('active', view==='cumpridos');
     document.getElementById('filter-tabs-ativos').style.display = view==='ativos' ? 'flex' : 'none';
+    document.getElementById('filter-tabs-djen').style.display = view==='djen' ? 'flex' : 'none';
 
     if (view === 'ativos') renderPrazos();
     else if (view === 'nao-cumpridos') renderNaoCumpridos();
+    else if (view === 'djen') renderPublicacoesDjen();
     else renderCumpridos();
   }
 
@@ -3489,6 +3883,7 @@
 
   function limparForm() {
     editingPrazoId = null;
+    editingDjenImportId = null;
     editingPrazoStatusMeta = '';
     editingPrazoMotivoMeta = '';
     modoEdicaoData = 'prazo';
@@ -3733,6 +4128,7 @@ Faro Advocacia & Consultoria`
 
     await preencherResponsavel();
     await carregarPrazos();
+    await carregarPublicacoesDjen();
     assinarRealtime();
   }
 
